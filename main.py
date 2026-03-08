@@ -44,7 +44,7 @@ with st.sidebar:
     st.header("🌐 Language")
     lang_choice = st.selectbox("Selecciona:", ["Español", "Italiano", "English"])
     text = languages[lang_choice]
-      nombre_prop = st.text_input("Propiedad", value="Villas Marlin")
+    nombre_prop = st.text_input("Propiedad", value="Villas Marlin")
 
 st.title(f"Análisis: {nombre_prop}")
 st.markdown(f"{text['subtitle']}")
