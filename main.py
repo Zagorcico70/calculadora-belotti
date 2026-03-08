@@ -74,7 +74,7 @@ st.map(map_data, zoom=12)
 st.map(map_data)
 
 st.divider()
-st.mi_num = "529984112345" # <--- Pon tu número real aquí
+mi_num = "529847454906"
 msg = f"Hola Antonio, quiero info de {nombre_prop}"
 link = f"https://wa.me/{mi_num}?text={msg.replace(' ', '%20')}"
 st.link_button("Contactar Antonio", link)
