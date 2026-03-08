@@ -41,9 +41,8 @@ if prop in locaciones:
 else:
     punto = [21.1619, -86.8515] # Centro de Cancún
     zoom_n = 12
-
-
-st.map(df_mapa, zoom=zoom_n)
+    df_mapa = pd.DataFrame({'lat': [punto[0]], 'lon': [punto[1]]})
+    st.map(df_mapa, zoom=zoom_n)
 
 df_mapa = pd.DataFrame({'lat': [punto[0]], 'lon': [punto[1]]})
 st.map(df_mapa, zoom=16)
