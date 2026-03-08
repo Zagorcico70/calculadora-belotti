@@ -36,11 +36,11 @@ m3.metric("ROI REAL NETO", f"{roi_final:.2f}%")
 
 st.subheader("Ubicación Estratégica")
 if prop in locaciones:
-punto = locaciones[prop]
-zoom_n = 16
+    punto = locaciones[prop]
+    zoom_n = 16
 else:
-punto = [21.1619, -86.8515] # Centro de Cancún
-zoom_n = 12
+    punto = [21.1619, -86.8515] # Centro de Cancún
+    zoom_n = 12
 
 df_mapa = pd.DataFrame({'lat': [punto[0]], 'lon': [punto[1]]})
 st.map(df_mapa, zoom=zoom_n)
