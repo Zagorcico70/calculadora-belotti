@@ -55,9 +55,9 @@ c1, c2 = st.columns(2)
 
 wa_link = f"https://wa.me/529847454906?text=Info%20sobre%20{prop}"
 
-
+c_btn1, c_btn2 = st.columns(2)
 with c_btn1:
-    c_btn1, c_btn2 = st.columns(2)
+    
     st.link_button("📲 WhatsApp", wa_link, use_container_width=True)
 with c_btn2:
     st.link_button("💼 Mi Perfil", "", use_container_width=True)
