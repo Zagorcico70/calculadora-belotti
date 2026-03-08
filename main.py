@@ -30,7 +30,7 @@ st.metric("ROI ESTIMADO", f"{roi:.2f}%")
 
 st.subheader("Ubicación de la Inversión")
 if prop in locaciones:
-punto = locaciones[prop]
+    punto = locaciones[prop]
     zoom_n = 15
 else:
 punto = [21.1619, -86.8515]
