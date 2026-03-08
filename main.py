@@ -47,7 +47,7 @@ wa_link = f"https://wa.me/529847454906?text=Info%20sobre%20{prop}"
 
 
 with c_btn1:
-st.link_button("📲 WhatsApp", wa_link, use_container_width=True)
+    st.link_button("📲 WhatsApp", wa_link, use_container_width=True)
 with c_btn2:
-st.link_button("💼 Mi Perfil", "", use_container_width=True)
-st.caption("Antonio Belotti - Real Estate Advisor")
+    st.link_button("💼 Mi Perfil", "", use_container_width=True)
+    st.caption("Antonio Belotti - Real Estate Advisor")
