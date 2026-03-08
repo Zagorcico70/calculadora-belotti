@@ -44,8 +44,9 @@ with st.sidebar:
     st.header("🌐 Language")
     lang_choice = st.selectbox("Selecciona:", ["Español", "Italiano", "English"])
     text = languages[lang_choice]
+      nombre_prop = st.text_input("Propiedad", value="Villas Marlin")
 
-st.title(text["title"])
+st.title(f"Análisis: {nombre_prop}")
 st.markdown(f"{text['subtitle']}")
 
 col_in1, col_in2 = st.columns(2)
@@ -65,9 +66,16 @@ c1.metric(text["utilidad"], f"${utilidad_neta:,.0f}")
 c2.metric(text["roi"], f"{roi:.2f}%")
 
 st.subheader(text["map_title"])
-map_data = pd.DataFrame({'lat': [21.1743, 21.1378], 'lon': [-86.8041, -86.7475]})
+map_data = pd.DataFrame({
+'lat': [21.1743, 21.1415, 21.1685, 21.1378],
+'lon': [-86.8041, -86.7490, -86.8010, -86.7475]
+})
+st.map(map_data, zoom=12)
 st.map(map_data)
 
 st.divider()
-st.link_button(text["contact"], "")
+st.mi_num = "529984112345" # <--- Pon tu número real aquí
+msg = f"Hola Antonio, quiero info de {nombre_prop}"
+link = f"https://wa.me/{mi_num}?text={msg.replace(' ', '%20')}"
+st.link_button("Contactar Antonio", link)
 st.caption("Antonio Belotti - Certificado CONOCER D-0012504124")
