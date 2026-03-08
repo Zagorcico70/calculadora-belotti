@@ -16,7 +16,7 @@ roi = (utilidad_anual / precio) * 100
 
 # --- RESULTADOS ---
 col1, col2 = st.columns(2)
-col1.metric("Utilidad Neta/Año", f"${utilidad_neta:,.0f} USD")
+import streamlit as st
 col2.metric("ROI Anual", f"{roi:.2f}%")
 
 st.info(f"Tiempo de recuperación: {precio/utilidad_anual:.1f} años.")
