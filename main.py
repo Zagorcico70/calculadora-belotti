@@ -20,9 +20,9 @@ with st.sidebar:
 st.title(f"Análisis: {prop}")
 col1, col2 = st.columns(2)
 with col1:
-precio = st.number_input("Precio de Venta (USD)", value=250000, step=10000)
+    precio = st.number_input("Precio de Venta (USD)", value=250000, step=10000)
 with col2:
-renta = st.number_input("Renta Mensual (USD)", value=2500, step=100)
+    renta = st.number_input("Renta Mensual (USD)", value=2500, step=100)
 
 inversion_total = precio * (1 + (pct_cierre / 100))
 utilidad_neta_anual = (renta * 12) * 0.75  # Menos 20% de mantenimiento/administración
