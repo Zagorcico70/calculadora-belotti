@@ -50,9 +50,9 @@ st.markdown(f"{text['subtitle']}")
 
 col_in1, col_in2 = st.columns(2)
 with col_in1:
-precio = st.number_input(text["price"], value=250000, step=10000)
+    precio = st.number_input(text["price"], value=250000, step=10000)
 with col_in2:
-renta = st.number_input(text["rent"], value=2500, step=100)
+    renta = st.number_input(text["rent"], value=2500, step=100)
 
 gastos_pct = st.slider(text["expenses"], 10, 40, 25)
 
