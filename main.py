@@ -7,7 +7,7 @@ st.set_page_config(page_title="Belotti Premium", layout="centered")
 locaciones = {
 "Villas Marlin": [21.102437786454768, -86.76195352773082],
 "Amara": [21.1685, -86.8010],
-"Puerto Cancun": [21.1743, -86.8041],
+"Puerto Cancun": [21.16205146928014, -86.80774264339938],
 "La Amada": [21.2585, -86.8115],
 }
 
