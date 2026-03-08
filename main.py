@@ -24,8 +24,14 @@ with col1:
 with col2:
     renta = st.number_input("Renta USD", value=2500)
 
-roi = ((renta * 12 * 0.75) / precio) * 100
-st.metric("ROI ESTIMADO", f"{roi:.2f}%")
+pct_cierre = st.slider("Gastos de Cierre e Impuestos (%)", 5, 6, 7)
+inversion_total = precio * (1 + (pct_cierre / 100))
+utilidad_neta = (renta * 12) * 0.75
+roi_final = (utilidad_neta / inversion_total) * 100
+st.divider()
+st.subheader(f"Desembolso Total: ${inversion_total:,.0f} USD")
+st.info(f"Este monto ya incluye el ISABI, Notaría y Registro (aprox. {pct_cierre}%)")
+st.metric("ROI REAL (Neto)", f"{roi_final:.2f}%")
 
 
 st.subheader("Ubicación de la Inversión")
