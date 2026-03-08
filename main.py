@@ -20,9 +20,9 @@ with st.sidebar:
 st.title(f"Análisis: {prop}")
 col1, col2 = st.columns(2)
 with col1:
-precio = st.number_input("Precio USD", value=250000)
+    precio = st.number_input("Precio USD", value=250000)
 with col2:
-renta = st.number_input("Renta USD", value=2500)
+    renta = st.number_input("Renta USD", value=2500)
 
 roi = ((renta * 12 * 0.75) / precio) * 100
 st.metric("ROI ESTIMADO", f"{roi:.2f}%")
@@ -41,14 +41,14 @@ st.map(df_mapa, zoom=zoom_n)
 
 
 st.divider()
-c_btn1, c_btn2 = st.columns(2)
+    c_btn1, c_btn2 = st.columns(2)
 
 Configura tu número aquí:
-wa_link =529847454906 f"{prop}"
+    wa_link =529847454906 f"{prop}"
 
 with c_btn1:
-st.link_button("📲 WhatsApp", wa_link, use_container_width=True)
+    st.link_button("📲 WhatsApp", wa_link, use_container_width=True)
 with c_btn2:
-st.link_button("💼 Mi Perfil", "", use_container_width=True)
+    st.link_button("💼 Mi Perfil", "", use_container_width=True)
 
 st.caption("Antonio Belotti - Real Estate Advisor")
