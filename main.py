@@ -28,9 +28,11 @@ inversion_total = precio * (1 + (pct_cierre / 100))
 utilidad_neta_anual = (renta * 12) * 0.75  # Menos 20% de mantenimiento/administración
 roi_final = (utilidad_neta_anual / inversion_total) * 100
 
-st.divider()m1, m2, m3 = st.columns(3)m1.metric("Inversión Total", f"${inversion_total:,.0f}")
-m2.metric("Utilidad Anual", f"${utilidad_neta_anual:,.0f}")m3.metric("ROI REAL NETO", f"{roi_final:.2f}%")st.info(f"El costo total incluye ${precio * (pct_cierre/100):,.0f} USD de gastos notariales e impuestos.")
-
+ st.divider()
+ m1, m2, m3 = st.columns(3)
+ m1.metric("Inversión Total", f"${inversion_total:,.0f}")
+ m2.metric("Utilidad Anual", f"${utilidad_neta_anual:,.0f}")
+ m3.metric("ROI REAL NETO", f"{roi_final:.2f}%")
 
 st.subheader("Ubicación Estratégica")
 if prop in locaciones:
