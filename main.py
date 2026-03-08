@@ -33,7 +33,7 @@ if prop in locaciones:
     punto = locaciones[prop]
     zoom_n = 15
 else:
-punto = [21.1619, -86.8515]
+    punto = [21.1619, -86.8515]
     zoom_n = 12
 
 df_mapa = pd.DataFrame({'lat': [punto[0]], 'lon': [punto[1]]})
