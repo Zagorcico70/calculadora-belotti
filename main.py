@@ -44,7 +44,7 @@ st.divider()
 c_btn1, c_btn2 = st.columns(2)
 
 wa_link = f"https://wa.me/529847454906?text=Info%20sobre%20{prop}"
-    wa_link =529847454906 f"{prop}"
+
 
 with c_btn1:
 st.link_button("📲 WhatsApp", wa_link, use_container_width=True)
