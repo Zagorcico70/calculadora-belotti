@@ -37,7 +37,8 @@ else:
     zoom_n = 12
 
 df_mapa = pd.DataFrame({'lat': [punto[0]], 'lon': [punto[1]]})
-st.map(df_mapa, zoom=zoom_n)
+st.map(df_mapa, zoom=zoom_n, color="#0080ff")
+st.link_button("📍 Abrir Google Maps", f"https://www.google.com/maps?q={punto[0]},{punto[1]}")
 
 
 st.divider()
