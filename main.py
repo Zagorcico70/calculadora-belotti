@@ -40,6 +40,7 @@ languages = {
 }
 
 with st.sidebar:
+  
 st.header("🌐 Language")
 lang_choice = st.selectbox("Selecciona:", ["Español", "Italiano", "English"])
 text = languages[lang_choice]
