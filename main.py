@@ -13,8 +13,8 @@ locaciones = {
 
 
 with st.sidebar:
-lang = st.selectbox("🌐", ["Español", "Italiano", "English"])
-prop = st.text_input("Propiedad", value="Villas Marlin")
+    lang = st.selectbox("🌐", ["Español", "Italiano", "English"])
+    prop = st.text_input("Propiedad", value="Villas Marlin")
 
 
 st.title(f"Análisis: {prop}")
