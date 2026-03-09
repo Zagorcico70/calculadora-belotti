@@ -12,6 +12,7 @@ locaciones = {
 
 
 with st.sidebar:
+    
     st.title("Configuración")
     prop = st.text_input("Propiedad / Cliente", value="Villas Marlin")
     pct_cierre = st.slider("Gastos de Cierre e Impuestos %", 5, 6, 7)
@@ -59,5 +60,5 @@ with c_btn1:
     
     st.link_button("📲 WhatsApp", wa_link, use_container_width=True)
 with c_btn2:
-    st.link_button("💼 Mi Perfil", "", use_container_width=True)
+    st.link_button("💼 Mi Perfil", "", "https://www.linkedin.com/in/antoniobelotti")
     st.caption("Antonio Belotti - Real Estate Advisor")
