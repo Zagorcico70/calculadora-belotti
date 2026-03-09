@@ -1,5 +1,21 @@
 import streamlit as st
-import pandas as pd
+
+def check_password():
+    if "password_correct" not in st.session_state:
+        st.sidebar.title("🔐 Acceso Privado")
+        # Aquí puedes cambiar el texto a español si quieres
+        password = st.sidebar.text_input("Introduce el código para acceder:", type="password")
+        if st.sidebar.button("Entrar"):
+            if password == "Belotti2026": # <--- Esta es tu contraseña
+                st.session_state["password_correct"] = True
+                st.rerun()
+            else:
+                st.sidebar.error("⚠️ Código incorrecto")
+        return False
+    return True
+
+# ESTA LÍNEA ES CLAVE:
+if check_password():
 
 st.set_page_config(page_title="Belotti Inversiones", layout="centered")
 
