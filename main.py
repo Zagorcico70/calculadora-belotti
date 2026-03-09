@@ -17,7 +17,7 @@ def check_password():
 # ESTA LÍNEA ES CLAVE:
 if check_password():
 
-st.set_page_config(page_title="Belotti Inversiones", layout="centered")
+    st.set_page_config(page_title="Belotti Inversiones", layout="centered")
 
 locaciones = {
 "Villas Marlin": [21.102437786454768, -86.76195352773082],
