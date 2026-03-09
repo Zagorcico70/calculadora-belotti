@@ -61,9 +61,9 @@ else:
     df_mapa = pd.DataFrame({'lat': [punto[0]], 'lon': [punto[1]]})
     st.map(df_mapa, zoom=zoom_n)
 
-df_mapa = pd.DataFrame({'lat': [punto[0]], 'lon': [punto[1]]})
-st.map(df_mapa, zoom=16)
-st.link_button("📍 Abrir Google Maps", f"https://www.google.com/maps?q={punto[0]},{punto[1]}")
+    df_mapa = pd.DataFrame({'lat': [punto[0]], 'lon': [punto[1]]})
+    st.map(df_mapa, zoom=16)
+    st.link_button("📍 Abrir Google Maps", f"https://www.google.com/maps?q={punto[0]},{punto[1]}")
 
 
 st.divider()
