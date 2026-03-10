@@ -98,42 +98,40 @@ with col_redes1:
 with col_redes2:
     st.link_button("🔗 Mi Perfil de LinkedIn", "https://www.linkedin.com/in/antoniobelotti/")
 
-# --- LÓGICA DEL MAPA DINÁMICO ---
-st.subheader("📍 Ubicación del Proyecto")
+# --- LÓGICA DE UBICACIÓN DINÁMICA MEJORADA ---
+st.divider()
 
-# Intentamos detectar qué seleccionó el usuario
-# IMPORTANTE: Cambia 'proyecto' por el nombre exacto de tu variable de selección si es necesario
-try:
-    seleccion = str(proyecto)
-except NameError:
-    seleccion = "Cancún"
+# 1. Intentamos detectar la selección buscando en el estado de la sesión de Streamlit
+# Esto busca cualquier variable que contenga el nombre de un proyecto
+contexto = str(st.session_state).lower()
 
-# Coordenadas por zona
-if "Blume" in seleccion or "Shark" in seleccion or "SLS" in seleccion:
+if "blume" in contexto or "shark" in contexto or "sls" in contexto:
     lat, lon, zoom_mapa = 21.1438, -86.8035, 15
     lugar = "Puerto Cancún"
-elif "Marlin" in seleccion:
+elif "marlin" in contexto:
     lat, lon, zoom_mapa = 21.1412, -86.7615, 15
-    lugar = "Villas Marlin"
-elif "Amara" in seleccion:
+    lugar = "Zona Hotelera (Villas Marlin)"
+elif "amara" in contexto:
     lat, lon, zoom_mapa = 21.1715, -86.8055, 15
     lugar = "Amara"
-elif "Amada" in seleccion:
+elif "amada" in contexto:
     lat, lon, zoom_mapa = 21.2405, -86.8075, 15
-    lugar = "La Amada"
+    lugar = "Playa Mujeres (La Amada)"
 else:
+    # Si no detecta nada, se queda en el centro de Cancún
     lat, lon, zoom_mapa = 21.1619, -86.8515, 12
     lugar = "Cancún"
 
-# Mostrar Mapa
+st.subheader(f"📍 Ubicación del Proyecto: {lugar}")
+
+# 2. Renderizar el Mapa
 import pandas as pd
 df_mapa = pd.DataFrame({'lat': [lat], 'lon': [lon]})
 st.map(df_mapa, zoom=zoom_mapa)
 
-# Botón para abrir en Google Maps
-st.link_button(f"🗺️ Ver {lugar} en Google Maps", f"https://www.google.com/maps/search/?api=1&query={lat},{lon}")
+# 3. Botón de Google Maps con el pin exacto
+st.link_button(f"🗺️ Ver {lugar} en Google Maps", f"https://www.google.com/maps?q={lat},{lon}")
 
-# Pie de página oficial
+# Pie de página
 st.caption("---")
-st.caption("Antonio Belotti | Real Estate Data Analyst")
-st.caption("Agente Inmobiliario Certificado: D-0012504124")
+st.caption("Antonio Belotti | Agente Inmobiliario Certificado: D-0012504124")
