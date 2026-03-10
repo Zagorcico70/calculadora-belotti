@@ -85,9 +85,15 @@ st.divider()
 
 import pandas as pd
 
-
 # --- SECCIÓN DE MAPA DINÁMICO BELOTTI ---
 st.divider()
+
+# Intentamos obtener el nombre del proyecto. 
+# Si tu variable se llama diferente (ej. 'seleccion'), cámbiala aquí:
+try:
+    nombre_proyecto = str(proyecto)
+except NameError:
+    nombre_proyecto = "Cancún"
 
 if "Blume" in nombre_proyecto or "Shark" in nombre_proyecto or "SLS" in nombre_proyecto:
     punto_lat, punto_lon = 21.1438, -86.8035
@@ -106,6 +112,7 @@ else:
     nombre_loc = "Cancún"
 
 # Crear DataFrame y mostrar mapa
+import pandas as pd
 df_mapa = pd.DataFrame({'lat': [punto_lat], 'lon': [punto_lon]})
 
 st.subheader(f"📍 Ubicación Estratégica: {nombre_loc}")
@@ -115,3 +122,4 @@ st.map(df_mapa, zoom=14)
 st.link_button(f"🗺️ Ver {nombre_loc} en Google Maps", f"https://www.google.com/maps?q={punto_lat},{punto_lon}")
 
 st.caption("Análisis de inversión: Antonio Belotti - Agente Certificado D-0012504124")
+
