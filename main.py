@@ -1,6 +1,37 @@
 import streamlit as st
 import pandas as pd
 
+def check_password():
+    """Retorna True si el usuario ingresó la contraseña correcta."""
+    def password_entered():
+        if st.session_state["password"] == "Cancun2026": # <--- AQUÍ CAMBIA TU CONTRASEÑA
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # No guardamos la contraseña
+        else:
+            st.session_state["password_correct"] = False
+
+    if "password_correct" not in st.session_state:
+        # Primera vez, mostrar el login
+        st.text_input("Introduce la clave de acceso profesional:", 
+                     type="password", on_change=password_entered, key="password")
+        st.info("Esta herramienta es de uso exclusivo para clientes de Antonio Belotti.")
+        return False
+    elif not st.session_state["password_correct"]:
+        # Contraseña incorrecta
+        st.text_input("Clave incorrecta. Intenta de nuevo:", 
+                     type="password", on_change=password_entered, key="password")
+        st.error("🔒 Acceso denegado.")
+        return False
+    else:
+        return True
+
+
+if check_password():
+    
+    
+    st.title("📊 Calculadora de Inversión Belotti")
+    # ... (Pega todo el resto de tu código aquí adentro del 'if') ...
+
 st.title("📊 Calculadora de Inversión Belotti")
 
 
