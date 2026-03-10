@@ -11,7 +11,7 @@ zona_mapa = st.selectbox("📍 Ubicación:", ["Puerto Cancún...", "Villas Marli
 
 # PASO 2: Inputs del Sidebar (Gastos)
 st.sidebar.header("📉 Gastos Estimados")
-mantenimiento_anual = st.sidebar.number_input("Mantenimiento Anual (USD)
+mantenimiento_anual = st.sidebar.number_input("Mantenimiento Anual (USD)", value=5000)
 predial_anual = st.sidebar.number_input("Predial Anual (USD)
 
 
