@@ -76,7 +76,7 @@ else:
     c_btn1, c_btn2 = st.columns(2)
     
     st.link_button("📲 WhatsApp", wa_link, use_container_width=True)
-with c_btn2:
+
     st.link_button("💼 Mi Perfil", "https://www.linkedin.com/in/antonio-belotti-93521a8b/?locale=es")
     st.caption("Antonio Belotti - Real Estate Advisor")
 
