@@ -70,19 +70,13 @@ else:
 
 
 else:
-    
-        
         st.divider() 
         st.subheader("📍 Ubicación Estratégica: Puerto Cancún")
-
-       
         punto_lat = 21.1438
         punto_lon = -86.8035
 
-        
         df_mapa = pd.DataFrame({'lat': [punto_lat], 'lon': [punto_lon]})
 
-       
         st.map(df_mapa, zoom=15)
         st.link_button("🗺️ Abrir en Google Maps", f"https://www.google.com/maps?q={punto_lat},{punto_lon}")
 
