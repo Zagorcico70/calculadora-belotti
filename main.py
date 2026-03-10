@@ -70,19 +70,6 @@ else:
 
 
 else:
-        st.divider() 
-        st.subheader("📍 Ubicación Estratégica: Puerto Cancún")
-        punto_lat = 21.1438
-        punto_lon = -86.8035
-
-        df_mapa = pd.DataFrame({'lat': [punto_lat], 'lon': [punto_lon]})
-
-        st.map(df_mapa, zoom=15)
-        st.link_button("🗺️ Abrir en Google Maps", f"https://www.google.com/maps?q={punto_lat},{punto_lon}")
-
-
-   
-
 
     st.divider()
     c1, c2 = st.columns(2)
@@ -96,3 +83,18 @@ with c_btn1:
 with c_btn2:
     st.link_button("💼 Mi Perfil", "https://www.linkedin.com/in/antonio-belotti-93521a8b/?locale=es")
     st.caption("Antonio Belotti - Real Estate Advisor")
+
+
+    st.divider() 
+    st.subheader("📍 Ubicación Estratégica: Puerto Cancún")
+
+
+    punto_lat = 21.1438
+    punto_lon = -86.8035
+
+
+    df_mapa = pd.DataFrame({'lat': [punto_lat], 'lon': [punto_lon]})
+
+
+    st.map(df_mapa, zoom=15)
+    st.link_button("🗺️ Abrir en Google Maps", f"https://www.google.com/maps?q={punto_lat},{punto_lon}")
