@@ -41,42 +41,68 @@ inversion_total = precio * (1 + (pct_cierre / 100))
 utilidad_neta_anual = (renta * 12) * 0.75  # Menos 20% de mantenimiento/administración
 roi_final = (utilidad_neta_anual / inversion_total) * 100
 
+# --- 1. ENTRADAS DE DATOS (INPUTS) ---
+st.title("📊 Calculadora de Inversión Belotti")
+
+# Aquí pones tus sliders de precio y renta...
+precio = st.number_input("Precio de la Propiedad (USD)", value=1250000)
+renta_mensual = st.number_input("Renta Mensual Estimada (USD)", value=6500)
+
+# ESTA LÍNEA DEBE IR AQUÍ (Antes de los cálculos)
+zona_mapa = st.selectbox("Selecciona la ubicación estratégica:", 
+                         ["Puerto Cancún (Blume/Shark/SLS)", 
+                          "Zona Hotelera (Villas Marlin)", 
+                          "Puerta del Mar (Amara)", 
+                          "Playa Mujeres (La Amada)"])
+
+# --- 2. LÓGICA DE LA ZONA (Ahora ya conoce 'zona_mapa') ---
+if "Puerto" in zona_mapa:
+    lat, lon, zoom_mapa = 21.1415, -86.8042, 15
+    lugar, plusvalia_num = "Puerto Cancún", 9.5
+    perfil_txt = "💎 **Estrategia:** Preservación de Capital y Lujo."
+elif "Marlin" in zona_mapa:
+    lat, lon, zoom_mapa = 21.1410, -86.7628, 15
+    lugar, plusvalia_num = "Villas Marlin", 6.0
+    perfil_txt = "🏖️ **Estrategia:** Generación de Flujo de Efectivo."
+elif "Amara" in zona_mapa:
+    lat, lon, zoom_mapa = 21.1718, -86.8051, 15
+    lugar, plusvalia_num = "Amara", 8.0
+    perfil_txt = "⚓ **Estrategia:** Crecimiento Residencial Sólido."
+elif "Amada" in zona_mapa:
+    lat, lon, zoom_mapa = 21.2410, -86.8065, 15
+    lugar, plusvalia_num = "La Amada", 11.0
+    perfil_txt = "🚤 **Estrategia:** Plusvalía por Desarrollo."
+else:
+    lat, lon, zoom_mapa, lugar, plusvalia_num = 21.1619, -86.8515, 12, "Cancún", 5.0
+    perfil_txt = "Análisis general."
+
+# --- 3. CÁLCULOS (ROI) ---
+# Aquí haces tus operaciones...
+roi_porcentaje = ( (renta_mensual * 12) / precio ) * 100
+retorno_total = roi_porcentaje + plusvalia_num
+
+# --- 4. RESULTADOS 360° ---
+st.divider()
+st.subheader(f"📈 Resultados para {lugar}")
+
+col1, col2, col3 = st.columns(3)
+col1.metric("ROI Anual", f"{roi_porcentaje:.2f}%")
+col2.metric("Plusvalía", f"{plusvalia_num}%")
+col3.metric("RETORNO TOTAL", f"{retorno_total:.2f}%", delta=f"+{plusvalia_num}% Apprec.")
+
+st.info(perfil_txt)
+
+# --- 5. MAPA (Al final) ---
+import pandas as pd
+df_mapa = pd.DataFrame({'lat': [lat], 'lon': [lon]})
+st.map(df_mapa, zoom=zoom_mapa)
+
 st.divider()
 m1, m2, m3 = st.columns(3)
 m1.metric("Inversión Total", f"${inversion_total:,.0f}")
 m2.metric("Utilidad Anual", f"${utilidad_neta_anual:,.0f}")
 m3.metric("ROI REAL NETO", f"{roi_final:.2f}%")
 
-# --- 1. LÓGICA DE DATOS POR ZONA (Debe ir primero para definir 'lugar' y 'plusvalia_num') ---
-if "Puerto" in zona_mapa:
-    lat, lon, zoom_mapa = 21.1415, -86.8042, 15
-    lugar = "Puerto Cancún"
-    plusvalia_num = 9.5
-    perfil_txt = "💎 **Estrategia:** Preservación de Capital y Lujo."
-elif "Marlin" in zona_mapa:
-    lat, lon, zoom_mapa = 21.1410, -86.7628, 15
-    lugar = "Villas Marlin"
-    plusvalia_num = 6.0
-    perfil_txt = "🏖️ **Estrategia:** Generación de Flujo de Efectivo (Cash Flow)."
-elif "Amara" in zona_mapa:
-    lat, lon, zoom_mapa = 21.1718, -86.8051, 15
-    lugar = "Amara"
-    plusvalia_num = 8.0
-    perfil_txt = "⚓ **Estrategia:** Crecimiento Residencial Sólido."
-elif "Amada" in zona_mapa:
-    lat, lon, zoom_mapa = 21.2410, -86.8065, 15
-    lugar = "La Amada"
-    plusvalia_num = 11.0
-    perfil_txt = "🚤 **Estrategia:** Plusvalía por Desarrollo (Playa Mujeres)."
-else:
-    lat, lon, zoom_mapa = 21.1619, -86.8515, 12
-    lugar = "Cancún"
-    plusvalia_num = 5.0
-    perfil_txt = "Análisis general de mercado."
-
-# --- 2. CÁLCULO DEL RETORNO TOTAL ---
-# Revisa que 'roi_porcentaje' sea el nombre que usaste arriba para tu ROI de rentas
-retorno_total = roi_porcentaje + plusvalia_num
 
 # --- 3. AHORA SÍ, VISUALIZACIÓN (Línea 81 corregida) ---
 st.divider()
