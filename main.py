@@ -10,7 +10,7 @@ def check_password():
                 st.session_state["password_correct"] = True
                 st.rerun()
             else:
-                st.sidebar.error("⚠️ Código incorrecto")
+                
         return False
     return True
 
