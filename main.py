@@ -88,38 +88,52 @@ import pandas as pd
 # --- SECCIÓN DE MAPA DINÁMICO BELOTTI ---
 st.divider()
 
-# Intentamos obtener el nombre del proyecto. 
-# Si tu variable se llama diferente (ej. 'seleccion'), cámbiala aquí:
+# --- SECCIÓN DE CONTACTO Y PERFIL PROFESIONAL ---
+st.divider()
+col_redes1, col_redes2 = st.columns(2)
+
+with col_redes1:
+    st.link_button("💬 Contactar por WhatsApp", "https://wa.me/529983959242") # Confirma que este sea tu número
+
+with col_redes2:
+    st.link_button("🔗 Mi Perfil de LinkedIn", "https://www.linkedin.com/in/antoniobelotti/")
+
+# --- LÓGICA DEL MAPA DINÁMICO ---
+st.subheader("📍 Ubicación del Proyecto")
+
+# Intentamos detectar qué seleccionó el usuario
+# IMPORTANTE: Cambia 'proyecto' por el nombre exacto de tu variable de selección si es necesario
 try:
-    nombre_proyecto = str(proyecto)
+    seleccion = str(proyecto)
 except NameError:
-    nombre_proyecto = "Cancún"
+    seleccion = "Cancún"
 
-if "Blume" in nombre_proyecto or "Shark" in nombre_proyecto or "SLS" in nombre_proyecto:
-    punto_lat, punto_lon = 21.1438, -86.8035
-    nombre_loc = "Puerto Cancún"
-elif "Marlin" in nombre_proyecto:
-    punto_lat, punto_lon = 21.1412, -86.7615
-    nombre_loc = "Zona Hotelera (Villas Marlin)"
-elif "Amara" in nombre_proyecto:
-    punto_lat, punto_lon = 21.1715, -86.8055
-    nombre_loc = "Puerta del Mar (Amara)"
-elif "Amada" in nombre_proyecto:
-    punto_lat, punto_lon = 21.2405, -86.8075
-    nombre_loc = "Playa Mujeres (La Amada)"
+# Coordenadas por zona
+if "Blume" in seleccion or "Shark" in seleccion or "SLS" in seleccion:
+    lat, lon, zoom_mapa = 21.1438, -86.8035, 15
+    lugar = "Puerto Cancún"
+elif "Marlin" in seleccion:
+    lat, lon, zoom_mapa = 21.1412, -86.7615, 15
+    lugar = "Villas Marlin"
+elif "Amara" in seleccion:
+    lat, lon, zoom_mapa = 21.1715, -86.8055, 15
+    lugar = "Amara"
+elif "Amada" in seleccion:
+    lat, lon, zoom_mapa = 21.2405, -86.8075, 15
+    lugar = "La Amada"
 else:
-    punto_lat, punto_lon = 21.1619, -86.8515
-    nombre_loc = "Cancún"
+    lat, lon, zoom_mapa = 21.1619, -86.8515, 12
+    lugar = "Cancún"
 
-# Crear DataFrame y mostrar mapa
+# Mostrar Mapa
 import pandas as pd
-df_mapa = pd.DataFrame({'lat': [punto_lat], 'lon': [punto_lon]})
+df_mapa = pd.DataFrame({'lat': [lat], 'lon': [lon]})
+st.map(df_mapa, zoom=zoom_mapa)
 
-st.subheader(f"📍 Ubicación Estratégica: {nombre_loc}")
-st.map(df_mapa, zoom=14)
+# Botón para abrir en Google Maps
+st.link_button(f"🗺️ Ver {lugar} en Google Maps", f"https://www.google.com/maps/search/?api=1&query={lat},{lon}")
 
-# Botón dinámico
-st.link_button(f"🗺️ Ver {nombre_loc} en Google Maps", f"https://www.google.com/maps?q={punto_lat},{punto_lon}")
-
-st.caption("Análisis de inversión: Antonio Belotti - Agente Certificado D-0012504124")
-
+# Pie de página oficial
+st.caption("---")
+st.caption("Antonio Belotti | Real Estate Data Analyst")
+st.caption("Agente Inmobiliario Certificado: D-0012504124")
