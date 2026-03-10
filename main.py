@@ -44,18 +44,21 @@ roi_final = (utilidad_neta_anual / inversion_total) * 100
 # --- 1. ENTRADAS DE DATOS (INPUTS) ---
 st.title("📊 Calculadora de Inversión Belotti")
 
-# Aquí pones tus sliders de precio y renta...
+# --- 1. ENTRADAS DE DATOS (Pon esto al principio de tu app) ---
+st.title("📊 Calculadora de Inversión Belotti")
+
+# (Aquí van tus sliders de precio y renta que ya tienes...)
 precio = st.number_input("Precio de la Propiedad (USD)", value=1250000)
 renta_mensual = st.number_input("Renta Mensual Estimada (USD)", value=6500)
 
-# ESTA LÍNEA DEBE IR AQUÍ (Antes de los cálculos)
-zona_mapa = st.selectbox("Selecciona la ubicación estratégica:", 
+# MOVER EL SELECTOR AQUÍ ARRIBA (Solo debe haber uno)
+zona_mapa = st.selectbox("📍 Selecciona la ubicación estratégica:", 
                          ["Puerto Cancún (Blume/Shark/SLS)", 
                           "Zona Hotelera (Villas Marlin)", 
                           "Puerta del Mar (Amara)", 
                           "Playa Mujeres (La Amada)"])
 
-# --- 2. LÓGICA DE LA ZONA (Ahora ya conoce 'zona_mapa') ---
+# --- 2. LÓGICA DE DATOS (Solo una vez) ---
 if "Puerto" in zona_mapa:
     lat, lon, zoom_mapa = 21.1415, -86.8042, 15
     lugar, plusvalia_num = "Puerto Cancún", 9.5
@@ -74,160 +77,40 @@ elif "Amada" in zona_mapa:
     perfil_txt = "🚤 **Estrategia:** Plusvalía por Desarrollo."
 else:
     lat, lon, zoom_mapa, lugar, plusvalia_num = 21.1619, -86.8515, 12, "Cancún", 5.0
-    perfil_txt = "Análisis general."
+    perfil_txt = "Análisis general de mercado."
 
-# --- 3. CÁLCULOS (ROI) ---
-# Aquí haces tus operaciones...
-roi_porcentaje = ( (renta_mensual * 12) / precio ) * 100
+# --- 3. CÁLCULOS DE ROI (Asegúrate de que 'roi_porcentaje' esté bien definido) ---
+roi_porcentaje = ((renta_mensual * 12) / precio) * 100
 retorno_total = roi_porcentaje + plusvalia_num
 
-# --- 4. RESULTADOS 360° ---
+# --- 4. RESULTADOS 360° (Solo una vez) ---
 st.divider()
-st.subheader(f"📈 Resultados para {lugar}")
-
-col1, col2, col3 = st.columns(3)
-col1.metric("ROI Anual", f"{roi_porcentaje:.2f}%")
-col2.metric("Plusvalía", f"{plusvalia_num}%")
-col3.metric("RETORNO TOTAL", f"{retorno_total:.2f}%", delta=f"+{plusvalia_num}% Apprec.")
-
-st.info(perfil_txt)
-
-# --- 5. MAPA (Al final) ---
-import pandas as pd
-df_mapa = pd.DataFrame({'lat': [lat], 'lon': [lon]})
-st.map(df_mapa, zoom=zoom_mapa)
-
-st.divider()
-m1, m2, m3 = st.columns(3)
-m1.metric("Inversión Total", f"${inversion_total:,.0f}")
-m2.metric("Utilidad Anual", f"${utilidad_neta_anual:,.0f}")
-m3.metric("ROI REAL NETO", f"{roi_final:.2f}%")
-
-
-# --- 3. AHORA SÍ, VISUALIZACIÓN (Línea 81 corregida) ---
-st.divider()
-st.subheader(f"📊 Análisis de Inversión 360°: {lugar}")
+st.subheader(f"📈 Análisis de Inversión 360°: {lugar}")
 
 col_met1, col_met2, col_met3 = st.columns(3)
-
 with col_met1:
-    st.metric(label="ROI (Renta Anual)", value=f"{roi_porcentaje:.2f}%")
-
+    st.metric("ROI (Renta)", f"{roi_porcentaje:.2f}%")
 with col_met2:
-    st.metric(label="Plusvalía Est. (Anual)", value=f"{plusvalia_num:.1f}%")
-
+    st.metric("Plusvalía Est.", f"{plusvalia_num}%")
 with col_met3:
-    st.metric(label="RETORNO TOTAL", value=f"{retorno_total:.2f}%", delta=f"+{plusvalia_num}% Plusvalía")
+    st.metric("RETORNO TOTAL", f"{retorno_total:.2f}%", delta=f"+{plusvalia_num}% Apprec.")
 
 st.info(perfil_txt)
 
-# --- 4. MAPA Y CONTACTO (Al final) ---
+# --- 5. MAPA ÚNICO ---
 import pandas as pd
 df_mapa = pd.DataFrame({'lat': [lat], 'lon': [lon]})
 st.map(df_mapa, zoom=zoom_mapa)
 
-st.subheader("Ubicación Estratégica")
-if prop in locaciones:
-    punto = locaciones[prop]
-    zoom_n = 16
-else:
-  
-    st.divider() 
-    st.subheader("📍 Ubicación Estratégica en Cancún")
-
-    # Coordenadas exactas para Puerto Cancún 
-    # Lat: 21.16205146928014, -86.80774264339938
-    punto_lat = 21.16205146928014
-    punto_lon = -86.80774264339938
-
-
-    df_mapa = pd.DataFrame({'lat': [punto_lat], 'lon': [punto_lon]})
-
-    st.divider()
-    c1, c2 = st.columns(2)
-
-    wa_link = f"https://wa.me/529847454906?text=Info%20sobre%20{prop}"
-
-    c_btn1, c_btn2 = st.columns(2)
-    
-    st.link_button("📲 WhatsApp", wa_link, use_container_width=True)
-
-    st.link_button ("🔗 💼 Mi Perfil LinkedIn", "https://www.linkedin.com/in/antonio-belotti-93521a8b/?locale=es")
-    st.caption("Antonio Belotti - Real Estate Advisor")
-
-# --- SECCIÓN DE RESULTADOS 360° (Debajo de tus cálculos de ROI) ---
+# --- 6. CONTACTO Y CIERRE (Solo una vez al final) ---
 st.divider()
-st.subheader(f"📊 Análisis de Inversión 360°: {lugar}")
-
-
-
-# --- MAPA Y CONTACTO (Debajo de las métricas) ---
-import pandas as pd
-df_mapa = pd.DataFrame({'lat': [lat], 'lon': [lon]})
-st.map(df_mapa, zoom=zoom_mapa)
-
-st.link_button(f"🗺️ Ver {lugar} en Google Maps", f"https://www.google.com/maps?q={lat},{lon}")
-
-
-st.divider() 
-
-import pandas as pd
-
-# --- SECCIÓN DE UBICACIÓN INTERACTIVA ---
-st.divider()
-st.subheader("📍 Explora la Ubicación")
-
-# --- SECCIÓN DE UBICACIÓN Y CONTACTO ---
-st.divider()
-
-# 1. Recuperamos tus botones de contacto (WhatsApp y LinkedIn)
 col_redes1, col_redes2 = st.columns(2)
 with col_redes1:
-    st.link_button("💬 Contactar por WhatsApp", "https://wa.me/529983959242")
+    st.link_button("💬 WhatsApp", "https://wa.me/529983959242")
 with col_redes2:
-    st.link_button("🔗 💼 Mi Perfil", "https://www.linkedin.com/in/antonio-belotti-93521a8b/?locale=es")
+    st.link_button("🔗 Perfil LinkedIn", "https://www.linkedin.com/in/antonio-belotti-93521a8b/?locale=es")
 
-st.subheader("📍 Explora la Ubicación Estratégica")
-
-# 2. Selector interactivo para el mapa
-zona_mapa = st.selectbox("Selecciona la propiedad para ver detalles:", 
-                         ["Puerto Cancún (Blume/Shark/SLS)", 
-                          "Zona Hotelera (Villas Marlin)", 
-                          "Puerta del Mar (Amara)", 
-                          "Playa Mujeres (La Amada)"])
-
-# 3. Lógica de coordenadas corregida (3 valores siempre para evitar el ValueError)
-if "Puerto" in zona_mapa:
-    lat, lon, zoom_mapa = 21.16205146928014, -86.80774264339938, 15
-    lugar = "Puerto Cancún"
-    nota = "💎 **Perfil:** Residencial de Ultra-Lujo. Ideal para rentas a largo plazo y plusvalía constante."
-elif "Marlin" in zona_mapa:
-    lat, lon, zoom_mapa = 21.102437786454768, -86.76195352773082, 15
-    lugar = "Villas Marlin"
-    nota = "🏖️ **Perfil:** Turístico-Vacacional. Máximo flujo de efectivo (Airbnb) frente al mar."
-elif "Amara" in zona_mapa:
-    lat, lon, zoom_mapa = 21.1718, -86.8051, 15
-    lugar = "Amara"
-    nota = "⚓ **Perfil:** Residencial Familiar. Excelente plusvalía en zona Puerta del Mar."
-elif "Amada" in zona_mapa:
-    lat, lon, zoom_mapa = 21.2410, -86.8065, 15
-    lugar = "La Amada"
-    nota = "🚤 **Perfil:** Exclusividad Náutica. Privacidad total y marina privada en Playa Mujeres."
-else:
-    lat, lon, zoom_mapa = 21.1619, -86.8515, 12
-    lugar = "Cancún"
-    nota = "📍 Análisis de mercado en la zona principal de Cancún."
-
-# 4. Renderizamos Mapa y Nota de Inversión
-import pandas as pd
-df_mapa = pd.DataFrame({'lat': [lat], 'lon': [lon]})
-st.map(df_mapa, zoom=zoom_mapa)
-st.info(nota)
-
-# 5. Botón dinámico para Google Maps
-st.link_button(f"🗺️ Abrir {lugar} en Google Maps", f"https://www.google.com/maps?q={lat},{lon}")
-
-# Pie de página institucional
+st.caption(f"🗺️ [Abrir {lugar} en Google Maps](http://maps.google.com/?q={lat},{lon})")
 st.caption("---")
 st.caption("Antonio Belotti | Real Estate Data Analyst & Certified Agent")
 st.caption("Certificación CONOCER: D-0012504124")
