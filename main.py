@@ -9,12 +9,7 @@ def check_password():
             if password == "Belotti2026": # <--- Esta es tu contraseña
                 st.session_state["password_correct"] = True
                 st.rerun()
-  def validar_datos(valor):  
-    if valor > 0:
-        return True        
-    else:
-        return False
-
+  
 # ESTA LÍNEA ES CLAVE:
 if check_password():
 
