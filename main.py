@@ -68,9 +68,6 @@ else:
 
     df_mapa = pd.DataFrame({'lat': [punto_lat], 'lon': [punto_lon]})
 
-
-else:
-
     st.divider()
     c1, c2 = st.columns(2)
 
