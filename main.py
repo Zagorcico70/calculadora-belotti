@@ -101,7 +101,7 @@ if "Puerto" in zona_mapa:
     lat, lon, zoom_mapa =21.1662446, -86.8043600947758
     lugar = "Puerto Cancún"
 elif "Marlin" in zona_mapa:
-    lat, lon, zoom_mapa = 21.102437786454768 -86.76195352773082
+    lat, lon, zoom_mapa = 21.102437786454768, -86.76195352773082
     lugar = "Villas Marlin"
 elif "Amara" in zona_mapa:
     lat, lon, zoom_mapa = 21.1715, -86.8055, 15
