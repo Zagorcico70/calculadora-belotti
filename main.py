@@ -85,53 +85,41 @@ st.divider()
 
 import pandas as pd
 
-# --- SECCIÓN DE MAPA DINÁMICO BELOTTI ---
+# --- SECCIÓN DE UBICACIÓN INTERACTIVA ---
 st.divider()
+st.subheader("📍 Explora la Ubicación")
 
-# --- SECCIÓN DE CONTACTO Y PERFIL PROFESIONAL ---
-st.divider()
-col_redes1, col_redes2 = st.columns(2)
+# Creamos un selector específico para el mapa para que sea infalible
+zona_mapa = st.selectbox("Selecciona la zona para ver en el mapa:", 
+                         ["Puerto Cancún (Blume/Shark/SLS)", 
+                          "Zona Hotelera (Villas Marlin)", 
+                          "Puerta del Mar (Amara)", 
+                          "Playa Mujeres (La Amada)"])
 
-with col_redes1:
-    st.link_button("💬 Contactar por WhatsApp", "https://wa.me/529983959242") # Confirma que este sea tu número
-
-with col_redes2:
-    st.link_button("🔗 Mi Perfil de LinkedIn", "https://www.linkedin.com/in/antoniobelotti/")
-
-# --- LÓGICA DE UBICACIÓN DINÁMICA MEJORADA ---
-st.divider()
-
-# 1. Intentamos detectar la selección buscando en el estado de la sesión de Streamlit
-# Esto busca cualquier variable que contenga el nombre de un proyecto
-contexto = str(st.session_state).lower()
-
-if "blume" in contexto or "shark" in contexto or "sls" in contexto:
+# Definimos coordenadas según este nuevo selector
+if "Puerto" in zona_mapa:
     lat, lon, zoom_mapa = 21.1438, -86.8035, 15
     lugar = "Puerto Cancún"
-elif "marlin" in contexto:
+elif "Marlin" in zona_mapa:
     lat, lon, zoom_mapa = 21.1412, -86.7615, 15
-    lugar = "Zona Hotelera (Villas Marlin)"
-elif "amara" in contexto:
+    lugar = "Villas Marlin"
+elif "Amara" in zona_mapa:
     lat, lon, zoom_mapa = 21.1715, -86.8055, 15
     lugar = "Amara"
-elif "amada" in contexto:
+elif "Amada" in zona_mapa:
     lat, lon, zoom_mapa = 21.2405, -86.8075, 15
-    lugar = "Playa Mujeres (La Amada)"
+    lugar = "La Amada"
 else:
-    # Si no detecta nada, se queda en el centro de Cancún
     lat, lon, zoom_mapa = 21.1619, -86.8515, 12
     lugar = "Cancún"
 
-st.subheader(f"📍 Ubicación del Proyecto: {lugar}")
-
-# 2. Renderizar el Mapa
+# Renderizamos el mapa
 import pandas as pd
 df_mapa = pd.DataFrame({'lat': [lat], 'lon': [lon]})
 st.map(df_mapa, zoom=zoom_mapa)
 
-# 3. Botón de Google Maps con el pin exacto
-st.link_button(f"🗺️ Ver {lugar} en Google Maps", f"https://www.google.com/maps?q={lat},{lon}")
+# Botón dinámico con pin exacto
+st.link_button(f"🗺️ Abrir {lugar} en Google Maps", f"https://www.google.com/maps/search/?api=1&query={lat},{lon}")
 
-# Pie de página
 st.caption("---")
 st.caption("Antonio Belotti | Agente Inmobiliario Certificado: D-0012504124")
