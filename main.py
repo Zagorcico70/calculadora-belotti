@@ -41,8 +41,6 @@ inversion_total = precio * (1 + (pct_cierre / 100))
 utilidad_neta_anual = (renta * 12) * 0.75  # Menos 20% de mantenimiento/administración
 roi_final = (utilidad_neta_anual / inversion_total) * 100
 
-# --- 1. ENTRADAS DE DATOS (INPUTS) ---
-st.title("📊 Calculadora de Inversión Belotti")
 
 # --- 1. ENTRADAS DE DATOS (Pon esto al principio de tu app) ---
 st.title("📊 Calculadora de Inversión Belotti")
