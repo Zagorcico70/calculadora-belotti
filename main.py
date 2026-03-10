@@ -20,7 +20,30 @@ locaciones = {
 "Amara": [21.1685, -86.8010],
 "Puerto Cancun": [21.16205146928014, -86.80774264339938],
 "La Amada": [21.2585, -86.8115],
-}
+}# --- 1. CONFIGURACIÓN DEL SIDEBAR (Aquí es donde CREAS las variables) ---
+st.sidebar.header("📉 Gastos Estimados")
+
+
+mantenimiento_anual = st.sidebar.number_input("Mantenimiento Anual (USD)", value=5000)
+predial_anual = st.sidebar.number_input("Predial Anual (USD)", value=800)
+
+
+
+renta_anual_bruta = renta_mensual * 12
+renta_neta_anual = renta_anual_bruta - mantenimiento_anual - predial_anual
+
+
+gastos_escrituracion = precio * 0.05
+inversion_total = precio + gastos_escrituracion
+
+
+roi_porcentaje = (renta_neta_anual / inversion_total) * 100
+retorno_total = roi_porcentaje + plusvalia_num
+
+
+st.divider()
+st.subheader(f"📊 Análisis de Inversión 360°: {lugar}")
+# ... aquí sigue el código de las 3 columnas que ya tienes ...
 
 
 with st.sidebar:
@@ -49,36 +72,7 @@ st.title("📊 Calculadora de Inversión Belotti")
 precio = st.number_input("Precio de la Propiedad (USD)", value=1250000)
 renta_mensual = st.number_input("Renta Mensual Estimada (USD)", value=6500)
 
-# --- LÍNEA 65 (Aproximadamente) ---
-# 1. CÁLCULOS FINANCIEROS (CONEXIÓN DE GASTOS)
-gastos_escrituracion = precio * 0.05  # 5% estimado en Quintana Roo
-inversion_total = precio + gastos_escrituracion
-renta_anual_bruta = renta_mensual * 12
-renta_neta_anual = renta_anual_bruta - mantenimiento_anual - predial_anual
 
-# 2. CÁLCULO DEL ROI NETO REAL
-roi_porcentaje = (renta_neta_anual / inversion_total) * 100
-retorno_total = roi_porcentaje + plusvalia_num
-
-# --- 3. VISUALIZACIÓN EN EL CENTRO DE LA APP ---
-st.divider()
-st.subheader(f"📊 Análisis de Inversión 360°: {lugar}")
-
-# Fila de desglose de inversión
-col_inv1, col_inv2 = st.columns(2)
-with col_inv1:
-    st.write(f"**Inversión Total con Gastos:** ${inversion_total:,.2f}")
-with col_inv2:
-    st.write(f"**Flujo Neto Anual (Cash Flow):** ${renta_neta_anual:,.2f}")
-
-# Métricas Principales (Las 3 columnas de impacto)
-col_met1, col_met2, col_met3 = st.columns(3)
-with col_met1:
-    st.metric(label="ROI NETO (Renta)", value=f"{roi_porcentaje:.2f}%")
-with col_met2:
-    st.metric(label="Plusvalía Anual Est.", value=f"{plusvalia_num:.1f}%")
-with col_met3:
-    st.metric(label="RETORNO TOTAL", value=f"{retorno_total:.2f}%", delta=f"+{plusvalia_num}% Plusvalía")
 
 st.info(perfil_txt)
 
