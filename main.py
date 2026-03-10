@@ -76,6 +76,54 @@ else:
     st.link_button ("🔗 💼 Mi Perfil LinkedIn", "https://www.linkedin.com/in/antonio-belotti-93521a8b/?locale=es")
     st.caption("Antonio Belotti - Real Estate Advisor")
 
+# --- SECCIÓN DE RESULTADOS 360° (Debajo de tus cálculos de ROI) ---
+st.divider()
+st.subheader(f"📊 Análisis de Inversión 360°: {lugar}")
+
+# 1. Definimos la plusvalía dinámica según la zona seleccionada arriba
+if "Puerto" in zona_mapa:
+    plusvalia_num = 9.5
+    perfil_txt = "💎 **Estrategia:** Preservación de Capital y Lujo."
+elif "Marlin" in zona_mapa:
+    plusvalia_num = 6.0
+    perfil_txt = "🏖️ **Estrategia:** Generación de Flujo de Efectivo (Cash Flow)."
+elif "Amara" in zona_mapa:
+    plusvalia_num = 8.0
+    perfil_txt = "⚓ **Estrategia:** Crecimiento Residencial Sólido."
+elif "Amada" in zona_mapa:
+    plusvalia_num = 11.0
+    perfil_txt = "🚤 **Estrategia:** Plusvalía por Desarrollo (Playa Mujeres)."
+else:
+    plusvalia_num = 5.0
+    perfil_txt = "Análisis general de mercado."
+
+# 2. Cálculo del Retorno Total (Suma de los dos beneficios)
+# Nota: 'roi_porcentaje' debe estar definido arriba en tu código
+retorno_total = roi_porcentaje + plusvalia_num
+
+# 3. Visualización en 3 Columnas de Impacto
+col_met1, col_met2, col_met3 = st.columns(3)
+
+with col_met1:
+    st.metric(label="ROI (Renta Anual)", value=f"{roi_porcentaje:.2f}%")
+
+with col_met2:
+    st.metric(label="Plusvalía Est. (Anual)", value=f"{plusvalia_num:.1f}%")
+
+with col_met3:
+    # El 'delta' muestra cuánto sumamos al ROI original
+    st.metric(label="RETORNO TOTAL", value=f"{retorno_total:.2f}%", delta=f"+{plusvalia_num}% Plusvalía")
+
+# Mensaje de perfil de inversión
+st.info(perfil_txt)
+
+# --- MAPA Y CONTACTO (Debajo de las métricas) ---
+import pandas as pd
+df_mapa = pd.DataFrame({'lat': [lat], 'lon': [lon]})
+st.map(df_mapa, zoom=zoom_mapa)
+
+st.link_button(f"🗺️ Ver {lugar} en Google Maps", f"https://www.google.com/maps?q={lat},{lon}")
+
 
 st.divider() 
 
