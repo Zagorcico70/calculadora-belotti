@@ -89,37 +89,57 @@ import pandas as pd
 st.divider()
 st.subheader("📍 Explora la Ubicación")
 
-# Creamos un selector específico para el mapa para que sea infalible
-zona_mapa = st.selectbox("Selecciona la zona para ver en el mapa:", 
+# --- SECCIÓN DE UBICACIÓN Y CONTACTO ---
+st.divider()
+
+# 1. Recuperamos tus botones de contacto (WhatsApp y LinkedIn)
+col_redes1, col_redes2 = st.columns(2)
+with col_redes1:
+    st.link_button("💬 Contactar por WhatsApp", "https://wa.me/529983959242")
+with col_redes2:
+    st.link_button("🔗 Perfil Profesional LinkedIn", "https://www.linkedin.com/in/antoniobelotti/")
+
+st.subheader("📍 Explora la Ubicación Estratégica")
+
+# 2. Selector interactivo para el mapa
+zona_mapa = st.selectbox("Selecciona la propiedad para ver detalles:", 
                          ["Puerto Cancún (Blume/Shark/SLS)", 
                           "Zona Hotelera (Villas Marlin)", 
                           "Puerta del Mar (Amara)", 
                           "Playa Mujeres (La Amada)"])
 
-# Definimos coordenadas según este nuevo selector
+# 3. Lógica de coordenadas corregida (3 valores siempre para evitar el ValueError)
 if "Puerto" in zona_mapa:
-    lat, lon, zoom_mapa = 21.1662446, -86.8043600947758,15
+    lat, lon, zoom_mapa = 21.1415, -86.8042, 15
     lugar = "Puerto Cancún"
+    nota = "💎 **Perfil:** Residencial de Ultra-Lujo. Ideal para rentas a largo plazo y plusvalía constante."
 elif "Marlin" in zona_mapa:
-    lat, lon, zoom_mapa = 21.102437786454768, -86.76195352773082,15
+    lat, lon, zoom_mapa = 21.1410, -86.7628, 15
     lugar = "Villas Marlin"
+    nota = "🏖️ **Perfil:** Turístico-Vacacional. Máximo flujo de efectivo (Airbnb) frente al mar."
 elif "Amara" in zona_mapa:
-    lat, lon, zoom_mapa = 21.1715, -86.8055, 15
+    lat, lon, zoom_mapa = 21.1718, -86.8051, 15
     lugar = "Amara"
+    nota = "⚓ **Perfil:** Residencial Familiar. Excelente plusvalía en zona Puerta del Mar."
 elif "Amada" in zona_mapa:
-    lat, lon, zoom_mapa = 21.2405, -86.8075, 15
+    lat, lon, zoom_mapa = 21.2410, -86.8065, 15
     lugar = "La Amada"
+    nota = "🚤 **Perfil:** Exclusividad Náutica. Privacidad total y marina privada en Playa Mujeres."
 else:
     lat, lon, zoom_mapa = 21.1619, -86.8515, 12
     lugar = "Cancún"
+    nota = "📍 Análisis de mercado en la zona principal de Cancún."
 
-# Renderizamos el mapa
+# 4. Renderizamos Mapa y Nota de Inversión
 import pandas as pd
 df_mapa = pd.DataFrame({'lat': [lat], 'lon': [lon]})
 st.map(df_mapa, zoom=zoom_mapa)
+st.info(nota)
 
-# Botón dinámico con pin exacto
-st.link_button(f"🗺️ Abrir {lugar} en Google Maps", f"https://www.google.com/maps/search/?api=1&query={lat},{lon}")
+# 5. Botón dinámico para Google Maps
+st.link_button(f"🗺️ Abrir {lugar} en Google Maps", f"https://www.google.com/maps?q={lat},{lon}")
 
+# Pie de página institucional
 st.caption("---")
-st.caption("Antonio Belotti | Agente Inmobiliario Certificado: D-0012504124")
+st.caption("Antonio Belotti | Real Estate Data Analyst & Certified Agent")
+st.caption("Certificación CONOCER: D-0012504124")
