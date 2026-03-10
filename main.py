@@ -89,9 +89,6 @@ import pandas as pd
 # --- SECCIÓN DE MAPA DINÁMICO BELOTTI ---
 st.divider()
 
-# Identificamos el proyecto seleccionado (Asegúrate de que 'proyecto' sea tu variable)
-    nombre_proyecto = str(proyecto) 
-
 if "Blume" in nombre_proyecto or "Shark" in nombre_proyecto or "SLS" in nombre_proyecto:
     punto_lat, punto_lon = 21.1438, -86.8035
     nombre_loc = "Puerto Cancún"
@@ -115,6 +112,6 @@ st.subheader(f"📍 Ubicación Estratégica: {nombre_loc}")
 st.map(df_mapa, zoom=14)
 
 # Botón dinámico
-st.link_button(f"🗺️ Ver {nombre_loc} en Google Maps", f"https://www.google.com/maps/search/?api=1&query={punto_lat},{punto_lon}")
+st.link_button(f"🗺️ Ver {nombre_loc} en Google Maps", f"https://www.google.com/maps?q={punto_lat},{punto_lon}")
 
 st.caption("Análisis de inversión: Antonio Belotti - Agente Certificado D-0012504124")
