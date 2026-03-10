@@ -16,10 +16,10 @@ predial_anual = st.sidebar.number_input("Predial Anual (USD)", value=1000)
 
 
 if "Puerto" in zona_mapa:
-    lat, lon, zoom_mapa, lugar, plusvalia_num = 21.1415, -86.8042, 15, "Puerto Cancún", 9.5
+    lat, lon, zoom_mapa, lugar, plusvalia_num = 21.160698343253276, -86.80741960054591, 15, "Puerto Cancún", 9.5
     perfil_txt = "💎 **Estrategia:** Preservación de Capital."
 elif "Marlin" in zona_mapa:
-    lat, lon, zoom_mapa, lugar, plusvalia_num = 21.1410, -86.7628, 15, "Villas Marlin", 6.0
+    lat, lon, zoom_mapa, lugar, plusvalia_num = 21.10336381721157, -86.76199910327554, 15, "Villas Marlin", 6.0
     perfil_txt = "🏖️ **Estrategia:** Cash Flow Turístico."
 # ... (Sigue con tus otros 'elif' de Amara y Amada igual que antes) ...
 else:
