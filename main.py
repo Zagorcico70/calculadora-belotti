@@ -90,7 +90,7 @@ import pandas as pd
 st.divider()
 
 # Identificamos el proyecto seleccionado (Asegúrate de que 'proyecto' sea tu variable)
-nombre_proyecto = str(proyecto) 
+    nombre_proyecto = str(proyecto) 
 
 if "Blume" in nombre_proyecto or "Shark" in nombre_proyecto or "SLS" in nombre_proyecto:
     punto_lat, punto_lon = 21.1438, -86.8035
