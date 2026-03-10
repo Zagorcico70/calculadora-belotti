@@ -97,7 +97,7 @@ col_redes1, col_redes2 = st.columns(2)
 with col_redes1:
     st.link_button("💬 Contactar por WhatsApp", "https://wa.me/529983959242")
 with col_redes2:
-    st.link_button("🔗 Perfil Profesional LinkedIn", "https://www.linkedin.com/in/antoniobelotti/")
+    st.link_button("🔗 💼 Mi Perfil", "https://www.linkedin.com/in/antonio-belotti-93521a8b/?locale=es"))
 
 st.subheader("📍 Explora la Ubicación Estratégica")
 
