@@ -74,7 +74,6 @@ else:
     wa_link = f"https://wa.me/529847454906?text=Info%20sobre%20{prop}"
 
     c_btn1, c_btn2 = st.columns(2)
-with 
     
     st.link_button("📲 WhatsApp", wa_link, use_container_width=True)
 with c_btn2:
