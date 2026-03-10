@@ -98,10 +98,10 @@ zona_mapa = st.selectbox("Selecciona la zona para ver en el mapa:",
 
 # Definimos coordenadas según este nuevo selector
 if "Puerto" in zona_mapa:
-    lat, lon, zoom_mapa = 21.1438, -86.8035, 15
+    lat, lon, zoom_mapa = 21.1566, -86.8205, 15
     lugar = "Puerto Cancún"
 elif "Marlin" in zona_mapa:
-    lat, lon, zoom_mapa = 21.1412, -86.7615, 15
+    lat, lon, zoom_mapa = 21.1166, -86.7725, 15
     lugar = "Villas Marlin"
 elif "Amara" in zona_mapa:
     lat, lon, zoom_mapa = 21.1715, -86.8055, 15
