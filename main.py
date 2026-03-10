@@ -56,14 +56,23 @@ if prop in locaciones:
     punto = locaciones[prop]
     zoom_n = 16
 else:
-    punto = [21.1619, -86.8515] # Centro de Cancún
-    zoom_n = 12
-    df_mapa = pd.DataFrame({'lat': [punto[0]], 'lon': [punto[1]]})
-    st.map(df_mapa, zoom=zoom_n)
+  
+st.divider() # Esto crea una línea sutil para separar los números del mapa
+st.subheader("📍 Ubicación Estratégica en Cancún")
 
-    df_mapa = pd.DataFrame({'lat': [punto[0]], 'lon': [punto[1]]})
-    st.map(df_mapa, zoom=16)
-    st.link_button("📍 Abrir Google Maps", f"https://www.google.com/maps?q={punto[0]},{punto[1]}")
+# Coordenadas exactas para Puerto Cancún 
+# Lat: 21.1438, Lon: -86.8035
+punto_lat = 21.1438
+punto_lon = -86.8035
+
+
+df_mapa = pd.DataFrame({'lat': [punto_lat], 'lon': [punto_lon]})
+
+
+st.map(df_mapa, zoom=15)
+
+
+st.link_button("🗺️ Abrir en Google Maps", f"https://www.google.com/maps?q={punto_lat},{punto_lon}")
 
 
 st.divider()
