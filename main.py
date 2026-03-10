@@ -61,9 +61,9 @@ else:
     st.subheader("📍 Ubicación Estratégica en Cancún")
 
     # Coordenadas exactas para Puerto Cancún 
-    # Lat: 21.162221559563445, -86.8071632865055
-    punto_lat = 21.162221559563445
-    punto_lon = -86.8071632865055
+    # Lat: 21.168089554691466, -86.80132679984585
+    punto_lat = 21.168089554691466
+    punto_lon = -86.80132679984585
 
 
     df_mapa = pd.DataFrame({'lat': [punto_lat], 'lon': [punto_lon]})
