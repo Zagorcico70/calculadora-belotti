@@ -69,18 +69,32 @@ else:
     df_mapa = pd.DataFrame({'lat': [punto_lat], 'lon': [punto_lon]})
 
 
-st.map(df_mapa, zoom=15)
+else:
+    
+    st.divider() 
+    st.subheader("📍 Ubicación Estratégica en Cancún")
+
+    punto_lat = 21.1438
+    punto_lon = -86.8035
+
+    
+    df_mapa = pd.DataFrame({'lat': [punto_lat], 'lon': [punto_lon]})
+
+    
+    st.map(df_mapa, zoom=15)
+
+    st.link_button("🗺️ Abrir en Google Maps", f"https://www.google.com/maps?q={punto_lat},{punto_lon}")
 
 
-st.link_button("🗺️ Abrir en Google Maps", f"https://www.google.com/maps?q={punto_lat},{punto_lon}")
+    st.link_button("🗺️ Abrir en Google Maps", f"https://www.google.com/maps?q={punto_lat},{punto_lon}")
 
 
-st.divider()
-c1, c2 = st.columns(2)
+    st.divider()
+    c1, c2 = st.columns(2)
 
-wa_link = f"https://wa.me/529847454906?text=Info%20sobre%20{prop}"
+    wa_link = f"https://wa.me/529847454906?text=Info%20sobre%20{prop}"
 
-c_btn1, c_btn2 = st.columns(2)
+    c_btn1, c_btn2 = st.columns(2)
 with c_btn1:
     
     st.link_button("📲 WhatsApp", wa_link, use_container_width=True)
