@@ -86,19 +86,35 @@ st.divider()
 import pandas as pd
 
 
-punto_lat = 21.1438
-punto_lon = -86.8035
+# --- SECCIÓN DE MAPA DINÁMICO BELOTTI ---
+st.divider()
 
+# Identificamos el proyecto seleccionado (Asegúrate de que 'proyecto' sea tu variable)
+nombre_proyecto = str(proyecto) 
 
+if "Blume" in nombre_proyecto or "Shark" in nombre_proyecto or "SLS" in nombre_proyecto:
+    punto_lat, punto_lon = 21.1438, -86.8035
+    nombre_loc = "Puerto Cancún"
+elif "Marlin" in nombre_proyecto:
+    punto_lat, punto_lon = 21.1412, -86.7615
+    nombre_loc = "Zona Hotelera (Villas Marlin)"
+elif "Amara" in nombre_proyecto:
+    punto_lat, punto_lon = 21.1715, -86.8055
+    nombre_loc = "Puerta del Mar (Amara)"
+elif "Amada" in nombre_proyecto:
+    punto_lat, punto_lon = 21.2405, -86.8075
+    nombre_loc = "Playa Mujeres (La Amada)"
+else:
+    punto_lat, punto_lon = 21.1619, -86.8515
+    nombre_loc = "Cancún"
+
+# Crear DataFrame y mostrar mapa
 df_mapa = pd.DataFrame({'lat': [punto_lat], 'lon': [punto_lon]})
 
-st.divider() 
-st.subheader("📍 Ubicación Estratégica: Puerto Cancún")
+st.subheader(f"📍 Ubicación Estratégica: {nombre_loc}")
+st.map(df_mapa, zoom=14)
 
-
-st.map(df_mapa, zoom=15)
-
-
-st.link_button("🗺️ Abrir en Google Maps", f"https://www.google.com/maps?q={punto_lat},{punto_lon}")
+# Botón dinámico
+st.link_button(f"🗺️ Ver {nombre_loc} en Google Maps", f"https://www.google.com/maps/search/?api=1&query={punto_lat},{punto_lon}")
 
 st.caption("Análisis de inversión: Antonio Belotti - Agente Certificado D-0012504124")
