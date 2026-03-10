@@ -58,11 +58,11 @@ zona_mapa = st.selectbox("📍 Selecciona la ubicación estratégica:",
 
 # --- 2. LÓGICA DE DATOS (Solo una vez) ---
 if "Puerto" in zona_mapa:
-    lat, lon, zoom_mapa = 21.1415, -86.8042, 15
+    lat, lon, zoom_mapa = 21.16205146928014, -86.80774264339938, 15
     lugar, plusvalia_num = "Puerto Cancún", 9.5
     perfil_txt = "💎 **Estrategia:** Preservación de Capital y Lujo."
 elif "Marlin" in zona_mapa:
-    lat, lon, zoom_mapa = 21.1410, -86.7628, 15
+    lat, lon, zoom_mapa = 21.102437786454768, -86.76195352773082, 15
     lugar, plusvalia_num = "Villas Marlin", 6.0
     perfil_txt = "🏖️ **Estrategia:** Generación de Flujo de Efectivo."
 elif "Amara" in zona_mapa:
