@@ -110,11 +110,11 @@ zona_mapa = st.selectbox("Selecciona la propiedad para ver detalles:",
 
 # 3. Lógica de coordenadas corregida (3 valores siempre para evitar el ValueError)
 if "Puerto" in zona_mapa:
-    lat, lon, zoom_mapa = 21.1415, -86.8042, 15
+    lat, lon, zoom_mapa = 21.16205146928014, -86.80774264339938, 15
     lugar = "Puerto Cancún"
     nota = "💎 **Perfil:** Residencial de Ultra-Lujo. Ideal para rentas a largo plazo y plusvalía constante."
 elif "Marlin" in zona_mapa:
-    lat, lon, zoom_mapa = 21.16205146928014, -86.80774264339938, 15
+    lat, lon, zoom_mapa = 21.102437786454768, -86.76195352773082, 15
     lugar = "Villas Marlin"
     nota = "🏖️ **Perfil:** Turístico-Vacacional. Máximo flujo de efectivo (Airbnb) frente al mar."
 elif "Amara" in zona_mapa:
