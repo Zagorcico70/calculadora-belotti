@@ -57,16 +57,16 @@ if prop in locaciones:
     zoom_n = 16
 else:
   
-st.divider() # Esto crea una línea sutil para separar los números del mapa
-st.subheader("📍 Ubicación Estratégica en Cancún")
+    st.divider() 
+    st.subheader("📍 Ubicación Estratégica en Cancún")
 
-# Coordenadas exactas para Puerto Cancún 
-# Lat: 21.1438, Lon: -86.8035
-punto_lat = 21.1438
-punto_lon = -86.8035
+    # Coordenadas exactas para Puerto Cancún 
+    # Lat: 21.1438, Lon: -86.8035
+    punto_lat = 21.1438
+    punto_lon = -86.8035
 
 
-df_mapa = pd.DataFrame({'lat': [punto_lat], 'lon': [punto_lon]})
+    df_mapa = pd.DataFrame({'lat': [punto_lat], 'lon': [punto_lon]})
 
 
 st.map(df_mapa, zoom=15)
