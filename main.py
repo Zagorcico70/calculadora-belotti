@@ -87,7 +87,7 @@ if check_password():
                 "Responde con tono profesional y basado en datos."
             )
 
-            model = genai.GenerativeModel("gemini-1.5-flash", system_instruction=system_instruction)
+            model = genai.GenerativeModel(model_name="models/gemini-1.5-flash", system_instruction=system_instr)
             
             with st.chat_message("assistant"):
                 with st.spinner("Analizando bases de datos..."):
