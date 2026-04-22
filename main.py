@@ -82,8 +82,7 @@ if check_password():
 
             # Instrucciones del Sistema para que use tus archivos
             system_instruction = (
-                # Asegúrate de que esta variable se llame exactamente igual arriba y abajo
-            system_instr = (
+                
                 "Eres Belotti Analytics, experto de Antonio Belotti. "
                 "Usa el PMDU para temas legales de Cancún y 'TRUST INFO' para explicar el fideicomiso. "
                 "Responde con precisión técnica y profesionalismo."
