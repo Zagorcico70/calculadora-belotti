@@ -65,8 +65,9 @@ if check_password():
         st.map(df_mapa, zoom=zoom_mapa)
 
     with tab2:
+        with tab2:
         st.title("🛡️ Consultoría IA / Certeza Jurídica")
-        st.write("Consulta datos del PMDU 2018-2030 y proyecciones de inversión.")
+        st.info("Asistente entrenado con el PMDU 2018-2030, Fideicomiso (Trust Info) y Knowledge Base.")
 
         if "messages" not in st.session_state:
             st.session_state.messages = []
@@ -75,14 +76,13 @@ if check_password():
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
 
-        if prompt := st.chat_input("Ej: ¿Qué densidad permite el PMDU en la SM 15?"):
+        if prompt := st.chat_input("Ej: ¿Cómo funciona el fideicomiso para extranjeros?"):
             st.session_state.messages.append({"role": "user", "content": prompt})
             with st.chat_message("user"):
                 st.markdown(prompt)
 
-            # Instrucciones del Sistema para que use tus archivos
-            system_instruction = (
-                
+            # --- ESTA ES LA PARTE QUE DEBEMOS ASEGURAR ---
+            instruccion_ia = (
                 "Eres Belotti Analytics, experto de Antonio Belotti. "
                 "Usa el PMDU para temas legales de Cancún y 'TRUST INFO' para explicar el fideicomiso. "
                 "Responde con precisión técnica y profesionalismo."
@@ -90,15 +90,14 @@ if check_password():
 
             model = genai.GenerativeModel(
                 model_name="gemini-1.5-flash", 
-                system_instruction=system_instr
+                system_instruction=instruccion_ia
             )
-            
+            # ---------------------------------------------
+
             with st.chat_message("assistant"):
-                with st.spinner("Analizando bases de datos..."):
+                with st.spinner("Consultando documentos legales..."):
                     response = model.generate_content(prompt)
                     st.markdown(response.text)
                     st.session_state.messages.append({"role": "assistant", "content": response.text})
-
-    # Pie de página (Compartido)
     st.write("---")
     st.caption("🚀 **Antonio Belotti** | Real Estate Data Analyst & Certified Agent")
