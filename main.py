@@ -82,12 +82,17 @@ if check_password():
 
             # Instrucciones del Sistema para que use tus archivos
             system_instruction = (
+                # Asegúrate de que esta variable se llame exactamente igual arriba y abajo
+            system_instr = (
                 "Eres Belotti Analytics, experto de Antonio Belotti. "
-                "Usa el PMDU 2018-2030 para temas legales y el análisis de Blume para ROI. "
-                "Responde con tono profesional y basado en datos."
+                "Usa el PMDU para temas legales de Cancún y 'TRUST INFO' para explicar el fideicomiso. "
+                "Responde con precisión técnica y profesionalismo."
             )
 
-            model = genai.GenerativeModel(model_name="models/gemini-1.5-flash", system_instruction=system_instr)
+            model = genai.GenerativeModel(
+                model_name="gemini-1.5-flash", 
+                system_instruction=system_instr
+            )
             
             with st.chat_message("assistant"):
                 with st.spinner("Analizando bases de datos..."):
