@@ -31,7 +31,8 @@ if st.button("Analizar con IA"):
     if "GEMINI_API_KEY" in st.secrets:
         api_key = st.secrets["GEMINI_API_KEY"]
         # URL Directa de Google (Saltamos la librería)
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+       
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
         
         headers = {'Content-Type': 'application/json'}
         payload = {
