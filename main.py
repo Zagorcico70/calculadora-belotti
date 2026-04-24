@@ -22,7 +22,7 @@ m1.metric("Ingreso Anual", f"${(renta * 12 * (ocupacion/100)):,.2f}")
 m2.metric("Utilidad Neta", f"${utilidad:,.2f}")
 m3.metric("CAP RATE", f"{cap_rate:.2f}%")
 
-# --- CONSULTORÍA IA (CONEXIÓN MANUAL) ---
+# --- CONSULTORÍA IA ---
 st.divider()
 st.subheader("🤖 Consultoría IA Belotti")
 pregunta = st.text_input("¿Qué quieres analizar?")
@@ -30,14 +30,13 @@ pregunta = st.text_input("¿Qué quieres analizar?")
 if st.button("Analizar con IA"):
     if "GEMINI_API_KEY" in st.secrets:
         api_key = st.secrets["GEMINI_API_KEY"]
-        # URL Directa de Google (Saltamos la librería)
-       
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
+        # Usamos gemini-pro que es el modelo más compatible
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
         
         headers = {'Content-Type': 'application/json'}
         payload = {
             "contents": [{
-                "parts": [{"text": f"Eres experto inmobiliario en Cancún. Analiza estos datos: Precio ${precio}, Cap Rate {cap_rate:.2f}%. Pregunta: {pregunta}"}]
+                "parts": [{"text": f"Eres experto inmobiliario en Cancún. Analiza: Precio ${precio}, Cap Rate {cap_rate:.2f}%. Pregunta: {pregunta}"}]
             }]
         }
         
@@ -45,11 +44,13 @@ if st.button("Analizar con IA"):
             try:
                 response = requests.post(url, headers=headers, json=payload)
                 data = response.json()
-                # Extraemos la respuesta del JSON de Google
-                texto_ia = data['candidates'][0]['content']['parts'][0]['text']
-                st.info(texto_ia)
+                if 'candidates' in data:
+                    texto_ia = data['candidates'][0]['content']['parts'][0]['text']
+                    st.info(texto_ia)
+                else:
+                    st.error("La IA no pudo procesar la respuesta. Revisa tu API Key.")
+                    st.write(data)
             except Exception as e:
-                st.error("Error en la conexión manual. Verifica tu API Key.")
-                st.write(f"Detalle técnico: {data if 'data' in locals() else e}")
+                st.error(f"Error de conexión: {e}")
     else:
-        st.error("No se encontró la API Key en Secrets.")
+        st.error("No se encontró la API Key en los Secrets de Streamlit.")
