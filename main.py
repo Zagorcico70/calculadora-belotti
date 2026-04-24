@@ -8,7 +8,7 @@ if "GEMINI_API_KEY" in st.secrets:
     try:
         genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
         # Esta es la forma más estable de llamar al modelo en versiones anteriores
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
     except Exception as e:
         st.error(f"Error de configuración: {e}")
 else:
