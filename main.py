@@ -1,52 +1,50 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Configuración de la página
-st.set_page_config(page_title="Belotti AI Consulting", page_icon="🤖")
-
-# --- GESTIÓN SEGURA DE API KEY ---
+# Configuración de seguridad (Secrets)
 try:
-    # Busca la clave en los Secrets de la plataforma Streamlit
     api_key = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=api_key)
-    
-    # Configuración del modelo con un "System Instruction" para que sea experto
-    model = genai.GenerativeModel(
-        model_name='gemini-pro',
-        generation_config={"temperature": 0.7},
-    )
-except Exception as e:
-    st.error("⚠️ Configuración incompleta: No se detectó la clave GEMINI_API_KEY.")
-    st.info("Configura la clave en el panel de Streamlit Cloud (Settings > Secrets).")
+    model = genai.GenerativeModel('gemini-pro')
+except:
+    st.error("Error: Configura la API Key en los Secrets de Streamlit.")
     st.stop()
 
-# --- INTERFAZ ---
-st.title("🤖 Belotti AI Consulting")
+# --- INTERFAZ DE TU CALCULADORA BELOTTI ---
+st.title("📊 Belotti Analytics")
+st.subheader("Calculadora de Inversión Inmobiliaria")
+
+# Aquí regresan tus campos de entrada
+col1, col2 = st.columns(2)
+
+with col1:
+    precio = st.number_input("Precio de Venta (USD)", value=1150000)
+    renta_mensual = st.number_input("Ingreso Mensual Bruto (USD)", value=19050)
+
+with col2:
+    mantenimiento = st.number_input("Gastos Mensuales (USD)", value=1000)
+    ocupacion = st.slider("Porcentaje de Ocupación Anual", 0, 100, 70)
+
+# Cálculos automáticos (Tu lógica de siempre)
+ingreso_anual = (renta_mensual * 12) * (ocupacion / 100)
+gastos_anuales = (mantenimiento * 12)
+utilidad_neta = ingreso_anual - gastos_anuales
+cap_rate = (utilidad_neta / precio) * 100
+
+# Resultados grandes y claros
 st.markdown("---")
+c1, c2, c3 = st.columns(3)
+c1.metric("Ingreso Anual", f"${ingreso_anual:,.2f}")
+c2.metric("Utilidad Neta", f"${utilidad_neta:,.2f}")
+c3.metric("CAP RATE", f"{cap_rate:.2f}%")
 
-# Instrucción del sistema (Invisible para el usuario, pero guía a la IA)
-SYSTEM_PROMPT = """
-Eres un experto consultor de inversiones inmobiliarias y analista de datos en Cancún. 
-Tu objetivo es ayudar a Antonio Belotti a analizar propiedades, calcular ROI, 
-Cap Rates y dar certidumbre a inversionistas internacionales. 
-Usa un tono profesional, directo y basado en datos reales de Quintana Roo.
-"""
+# --- CONSULTORÍA IA (Como un extra al final) ---
+st.markdown("---")
+st.subheader("🤖 Consultoría IA Belotti")
+pregunta = st.text_input("¿Quieres un análisis de estos números?", placeholder="Ej: ¿Es este un buen negocio para el centro de Cancún?")
 
-# Entrada del usuario
-user_query = st.text_area("Describa el escenario de inversión o la duda técnica:", 
-                          placeholder="Ej: Calcula el ROI neto para un edificio de $1.15M USD con ingresos de $19k USD mensuales...")
-
-if st.button("Iniciar Consultoría"):
-    if user_query:
-        with st.spinner("Analizando con Belotti AI..."):
-            try:
-                # Combinamos el contexto de experto con la duda del usuario
-                full_prompt = f"{SYSTEM_PROMPT}\n\nUsuario pregunta: {user_query}"
-                response = model.generate_content(full_prompt)
-                
-                st.subheader("📊 Análisis de Consultoría:")
-                st.write(response.text)
-            except Exception as e:
-                st.error(f"Error en la generación: {e}")
-    else:
-        st.warning("Por favor, ingresa una consulta.")
+if st.button("Analizar con IA"):
+    with st.spinner("Analizando..."):
+        contexto = f"Antonio Belotti está analizando: Precio ${precio}, Renta Mensual ${renta_mensual}, Ocupación {ocupacion}%, Cap Rate {cap_rate:.2f}%. Pregunta: {pregunta}"
+        response = model.generate_content(contexto)
+        st.info(response.text)
