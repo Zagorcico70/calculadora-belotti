@@ -1,24 +1,15 @@
 import streamlit as st
-import google.generativeai as genai
+import requests
 
-# --- CONFIGURACIÓN ---
 st.set_page_config(page_title="Belotti Analytics", page_icon="📊")
 
-if "GEMINI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    # Probamos con el modelo más nuevo y estable de 2026
-    model = genai.GenerativeModel('gemini-1.5-flash')
-else:
-    st.error("⚠️ Falta la API Key en los Secrets.")
-    st.stop()
-
-# --- CALCULADORA ---
+# --- INTERFAZ ---
 st.title("📊 Belotti Analytics")
-c1, c2 = st.columns(2)
-with c1:
+col1, col2 = st.columns(2)
+with col1:
     precio = st.number_input("Precio Venta (USD)", value=1150000.0)
     renta = st.number_input("Renta Mensual (USD)", value=19050.0)
-with c2:
+with col2:
     gastos = st.number_input("Gastos Mensuales (USD)", value=1000.0)
     ocupacion = st.slider("Ocupación %", 0, 100, 70)
 
@@ -31,21 +22,33 @@ m1.metric("Ingreso Anual", f"${(renta * 12 * (ocupacion/100)):,.2f}")
 m2.metric("Utilidad Neta", f"${utilidad:,.2f}")
 m3.metric("CAP RATE", f"{cap_rate:.2f}%")
 
-# --- CONSULTORÍA ---
+# --- CONSULTORÍA IA (CONEXIÓN MANUAL) ---
 st.divider()
 st.subheader("🤖 Consultoría IA Belotti")
-pregunta = st.text_input("¿Qué quieres analizar?", placeholder="Ej: Argumentos de venta para este ROI")
+pregunta = st.text_input("¿Qué quieres analizar?")
 
 if st.button("Analizar con IA"):
-    if pregunta:
+    if "GEMINI_API_KEY" in st.secrets:
+        api_key = st.secrets["GEMINI_API_KEY"]
+        # URL Directa de Google (Saltamos la librería)
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+        
+        headers = {'Content-Type': 'application/json'}
+        payload = {
+            "contents": [{
+                "parts": [{"text": f"Eres experto inmobiliario en Cancún. Analiza estos datos: Precio ${precio}, Cap Rate {cap_rate:.2f}%. Pregunta: {pregunta}"}]
+            }]
+        }
+        
         with st.spinner("Analizando..."):
             try:
-                # Prompt enriquecido con tu perfil experto
-                prompt = f"Como experto inmobiliario en Cancún, analiza: Precio ${precio}, Cap Rate {cap_rate:.2f}%. Pregunta: {pregunta}"
-                response = model.generate_content(prompt)
-                st.info(response.text)
+                response = requests.post(url, headers=headers, json=payload)
+                data = response.json()
+                # Extraemos la respuesta del JSON de Google
+                texto_ia = data['candidates'][0]['content']['parts'][0]['text']
+                st.info(texto_ia)
             except Exception as e:
-                # Si falla el 1.5-flash, el código nos dirá por qué
-                st.error(f"Nota: Estamos ajustando la conexión. Error: {e}")
+                st.error("Error en la conexión manual. Verifica tu API Key.")
+                st.write(f"Detalle técnico: {data if 'data' in locals() else e}")
     else:
-        st.warning("Escribe una pregunta.")
+        st.error("No se encontró la API Key en Secrets.")
