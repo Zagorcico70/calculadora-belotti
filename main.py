@@ -1,61 +1,52 @@
 import streamlit as st
-import pandas as pd
 import google.generativeai as genai
 
-# 1. Configuración de la API (Forzamos la versión estable)
-api_key = st.secrets.get("GOOGLE_API_KEY")
-if api_key:
-    genai.configure(api_key=api_key)
-else:
-    st.error("🚨 Falta la clave en Secrets.")
+# Configuración de la página
+st.set_page_config(page_title="Belotti AI Consulting", page_icon="🤖")
 
-# 2. Seguridad
-if "auth" not in st.session_state:
-    st.title("🔐 Belotti Inversiones")
-    pwd = st.text_input("Contraseña:", type="password")
-    if st.button("Entrar"):
-        if pwd == "Cancun2026":
-            st.session_state.auth = True
-            st.rerun()
-        else:
-            st.error("Clave incorrecta")
+# --- GESTIÓN SEGURA DE API KEY ---
+try:
+    # Busca la clave en los Secrets de la plataforma Streamlit
+    api_key = st.secrets["GEMINI_API_KEY"]
+    genai.configure(api_key=api_key)
+    
+    # Configuración del modelo con un "System Instruction" para que sea experto
+    model = genai.GenerativeModel(
+        model_name='gemini-pro',
+        generation_config={"temperature": 0.7},
+    )
+except Exception as e:
+    st.error("⚠️ Configuración incompleta: No se detectó la clave GEMINI_API_KEY.")
+    st.info("Configura la clave en el panel de Streamlit Cloud (Settings > Secrets).")
     st.stop()
 
-# 3. Interfaz
-tab1, tab2 = st.tabs(["📊 Calculadora", "🛡️ Consultoría IA"])
+# --- INTERFAZ ---
+st.title("🤖 Belotti AI Consulting")
+st.markdown("---")
 
-with tab1:
-    st.title("📊 Calculadora de Inversión")
-    precio = st.number_input("Precio Propiedad (USD)", value=1250000)
-    renta = st.number_input("Renta Mensual (USD)", value=6500)
-    inv_total = precio * 1.06
-    roi = (((renta * 12) - 6000) / inv_total) * 100
-    st.metric("ROI Estimado", f"{roi:.2f}%")
+# Instrucción del sistema (Invisible para el usuario, pero guía a la IA)
+SYSTEM_PROMPT = """
+Eres un experto consultor de inversiones inmobiliarias y analista de datos en Cancún. 
+Tu objetivo es ayudar a Antonio Belotti a analizar propiedades, calcular ROI, 
+Cap Rates y dar certidumbre a inversionistas internacionales. 
+Usa un tono profesional, directo y basado en datos reales de Quintana Roo.
+"""
 
-with tab2:
-    st.title("🛡️ Consultoría IA")
-    
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
+# Entrada del usuario
+user_query = st.text_area("Describa el escenario de inversión o la duda técnica:", 
+                          placeholder="Ej: Calcula el ROI neto para un edificio de $1.15M USD con ingresos de $19k USD mensuales...")
 
-    for m in st.session_state.messages:
-        with st.chat_message(m["role"]):
-            st.markdown(m["content"])
-
-    if prompt := st.chat_input("Escribe tu duda..."):
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
-        
-        try:
-            # EL AJUSTE MAESTRO: Usamos 'gemini-pro' que es el nombre universal
-            # Este modelo no falla con el error 404 de versiones
-            model = genai.GenerativeModel(model_name="gemini-pro")
-            
-            response = model.generate_content(prompt)
-            
-            with st.chat_message("assistant"):
-                st.markdown(response.text)
-                st.session_state.messages.append({"role": "assistant", "content": response.text})
-        except Exception as e:
-            st.error(f"Ajustando conexión... Intenta de nuevo. (Detalle: {str(e)})")
+if st.button("Iniciar Consultoría"):
+    if user_query:
+        with st.spinner("Analizando con Belotti AI..."):
+            try:
+                # Combinamos el contexto de experto con la duda del usuario
+                full_prompt = f"{SYSTEM_PROMPT}\n\nUsuario pregunta: {user_query}"
+                response = model.generate_content(full_prompt)
+                
+                st.subheader("📊 Análisis de Consultoría:")
+                st.write(response.text)
+            except Exception as e:
+                st.error(f"Error en la generación: {e}")
+    else:
+        st.warning("Por favor, ingresa una consulta.")
