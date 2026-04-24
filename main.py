@@ -1,54 +1,51 @@
 import streamlit as st
 import google.generativeai as genai
 
+# --- CONFIGURACIÓN ---
 st.set_page_config(page_title="Belotti Analytics", page_icon="📊")
 
-# --- CONEXIÓN DIRECTA ---
 if "GEMINI_API_KEY" in st.secrets:
-    try:
-        genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-        # Esta es la forma más estable de llamar al modelo en versiones anteriores
-        model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
-    except Exception as e:
-        st.error(f"Error de configuración: {e}")
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+    # Probamos con el modelo más nuevo y estable de 2026
+    model = genai.GenerativeModel('gemini-1.5-flash')
 else:
-    st.error("⚠️ Configura la clave API en los Secrets de Streamlit.")
+    st.error("⚠️ Falta la API Key en los Secrets.")
     st.stop()
 
 # --- CALCULADORA ---
 st.title("📊 Belotti Analytics")
-col1, col2 = st.columns(2)
-with col1:
-    precio = st.number_input("Precio (USD)", value=1150000.0)
+c1, c2 = st.columns(2)
+with c1:
+    precio = st.number_input("Precio Venta (USD)", value=1150000.0)
     renta = st.number_input("Renta Mensual (USD)", value=19050.0)
-with col2:
-    gastos = st.number_input("Gastos (USD)", value=1000.0)
+with c2:
+    gastos = st.number_input("Gastos Mensuales (USD)", value=1000.0)
     ocupacion = st.slider("Ocupación %", 0, 100, 70)
 
 utilidad = (renta * 12 * (ocupacion/100)) - (gastos * 12)
 cap_rate = (utilidad / precio) * 100 if precio > 0 else 0
 
-st.markdown("---")
-c1, c2, c3 = st.columns(3)
-c1.metric("Ingreso Anual", f"${(renta * 12 * (ocupacion/100)):,.2f}")
-c2.metric("Utilidad Neta", f"${utilidad:,.2f}")
-c3.metric("CAP RATE", f"{cap_rate:.2f}%")
+st.divider()
+m1, m2, m3 = st.columns(3)
+m1.metric("Ingreso Anual", f"${(renta * 12 * (ocupacion/100)):,.2f}")
+m2.metric("Utilidad Neta", f"${utilidad:,.2f}")
+m3.metric("CAP RATE", f"{cap_rate:.2f}%")
 
 # --- CONSULTORÍA ---
-st.markdown("---")
-st.subheader("🤖 Belotti AI Consulting")
-pregunta = st.text_input("Consulta técnica:")
+st.divider()
+st.subheader("🤖 Consultoría IA Belotti")
+pregunta = st.text_input("¿Qué quieres analizar?", placeholder="Ej: Argumentos de venta para este ROI")
 
 if st.button("Analizar con IA"):
     if pregunta:
-        with st.spinner("Generando..."):
+        with st.spinner("Analizando..."):
             try:
-                # Usamos el método de generación más simple
-                prompt = f"Inversión Cancún. Precio ${precio}, Cap Rate {cap_rate:.2f}%. Pregunta: {pregunta}"
+                # Prompt enriquecido con tu perfil experto
+                prompt = f"Como experto inmobiliario en Cancún, analiza: Precio ${precio}, Cap Rate {cap_rate:.2f}%. Pregunta: {pregunta}"
                 response = model.generate_content(prompt)
                 st.info(response.text)
             except Exception as e:
-                # Si esto falla, nos dará el error de red real
-                st.error(f"Error de red: {e}")
+                # Si falla el 1.5-flash, el código nos dirá por qué
+                st.error(f"Nota: Estamos ajustando la conexión. Error: {e}")
     else:
         st.warning("Escribe una pregunta.")
