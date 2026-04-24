@@ -7,7 +7,7 @@ st.set_page_config(page_title="Belotti Analytics", page_icon="📊")
 # 2. Configuración Segura de la IA
 if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    model = genai.GenerativeModel('models/gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-1.5-flash')
 else:
     st.error("⚠️ Falta la clave API en los Secrets de Streamlit.")
     st.stop()
