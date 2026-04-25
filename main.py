@@ -32,7 +32,7 @@ if st.button("Analizar con IA"):
         api_key = st.secrets["GEMINI_API_KEY"]
         # USAMOS EL MODELO QUE TU LLAVE SÍ TIENE: gemini-2.0-flash
      
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
         headers = {'Content-Type': 'application/json'}
         payload = {
             "contents": [{
