@@ -5,50 +5,66 @@ st.set_page_config(page_title="Belotti Analytics", page_icon="📊")
 
 # --- CALCULADORA ---
 st.title("📊 Belotti Analytics")
+st.subheader("Real Estate Investment Audit - Cancún")
+
 col1, col2 = st.columns(2)
 with col1:
     precio = st.number_input("Precio Venta (USD)", value=1150000.0)
-    renta = st.number_input("Renta Mensual (USD)", value=19050.0)
+    renta = st.number_input("Renta Mensual Bruta (USD)", value=19050.0)
 with col2:
-    gastos = st.number_input("Gastos Mensuales (USD)", value=1000.0)
-    ocupacion = st.slider("Ocupación %", 0, 100, 85)
+    gastos = st.number_input("Gastos/Mantenimiento (USD)", value=1000.0)
+    ocupacion = st.slider("Ocupación Anual %", 0, 100, 85)
 
-utilidad = (renta * 12 * (ocupacion/100)) - (gastos * 12)
+# Cálculos
+ingreso_anual = (renta * 12) * (ocupacion / 100)
+utilidad = ingreso_anual - (gastos * 12)
 cap_rate = (utilidad / precio) * 100 if precio > 0 else 0
 
 st.divider()
 m1, m2, m3 = st.columns(3)
-m1.metric("Utilidad Anual", f"${utilidad:,.0f}")
+m1.metric("Ingreso Anual Est.", f"${ingreso_anual:,.0f}")
+m2.metric("Utilidad Neta", f"${utilidad:,.0f}")
 m3.metric("CAP RATE", f"{cap_rate:.2f}%")
 
-# --- CONSULTORÍA IA ---
+# --- CONSULTORÍA CON GROQ (IA) ---
 st.divider()
-st.subheader("🤖 Belotti AI Consulting")
-pregunta = st.text_input("Pregunta al consultor:")
+st.subheader("🤖 Belotti AI Consulting (Powered by Groq)")
+pregunta = st.text_input("Haz una pregunta técnica sobre este ROI:")
 
 if st.button("Analizar con IA"):
-    if pregunta and "GEMINI_API_KEY" in st.secrets:
-        api_key = st.secrets["GEMINI_API_KEY"]
-        # USAMOS EL MODELO 8B: Es el que tiene menos restricciones de cuota
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key={api_key}"
+    if pregunta and "GROQ_API_KEY" in st.secrets:
+        api_key = st.secrets["GROQ_API_KEY"]
+        url = "https://api.groq.com/openai/v1/chat/completions"
         
-        payload = {
-            "contents": [{"parts": [{"text": f"Analiza como experto inmobiliario en Cancún: Precio ${precio}, Cap Rate {cap_rate:.2f}%. Pregunta: {pregunta}"}]}]
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
         }
         
-        with st.spinner("Analizando..."):
+        # Usamos Llama 3, que es increíblemente rápido y gratuito
+        payload = {
+            "model": "llama3-8b-8192",
+            "messages": [
+                {
+                    "role": "system", 
+                    "content": "Eres un experto asesor inmobiliario en Cancún y la Riviera Maya. Hablas español fluido."
+                },
+                {
+                    "role": "user", 
+                    "content": f"Datos: Precio ${precio}, Cap Rate {cap_rate:.2f}%. Pregunta: {pregunta}"
+                }
+            ]
+        }
+        
+        with st.spinner("Analizando con Groq (Ultra-fast)..."):
             try:
-                response = requests.post(url, json=payload)
-                data = response.json()
+                response = requests.post(url, headers=headers, json=payload)
                 if response.status_code == 200:
-                    st.info(data['candidates'][0]['content']['parts'][0]['text'])
+                    respuesta = response.json()['choices'][0]['message']['content']
+                    st.info(respuesta)
                 else:
-                    # Si falla, intentamos con el último recurso: Gemini 1.0 Pro
-                    st.warning("El modelo 8B falló. Intentando conexión de respaldo...")
-                    url_pro = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
-                    response_pro = requests.post(url_pro, json=payload)
-                    st.info(response_pro.json()['candidates'][0]['content']['parts'][0]['text'])
-            except:
-                st.error("Google sigue bloqueando la cuota. El problema es la configuración de tu cuenta de Google Cloud.")
+                    st.error(f"Error de Groq: {response.json()['error']['message']}")
+            except Exception as e:
+                st.error(f"Error de conexión: {e}")
     else:
-        st.warning("Escribe una pregunta.")
+        st.warning("Asegúrate de haber puesto la llave GROQ_API_KEY en los Secrets.")
