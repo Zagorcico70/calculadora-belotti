@@ -48,8 +48,7 @@ if st.button("Analizar con IA"):
                 "messages": [
                     {
                         "role": "system", 
-                        "content": "Eres un experto asesor inmobiliario certificado en Cancún. Analizas inversiones con ética y precisión técnica."
-                    },
+                      "content": "Eres un experto asesor inmobiliario en Cancún. Responde SIEMPRE en el mismo idioma en el que el usuario te haga la pregunta. Si preguntan en inglés, responde en inglés. Si preguntan en español, responde en español."
                     {
                         "role": "user", 
                         "content": f"Inversión: ${precio} USD, Cap Rate: {cap_rate:.2f}%. Pregunta: {pregunta}"
