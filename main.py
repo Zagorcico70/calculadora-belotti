@@ -29,7 +29,7 @@ m3.metric("CAP RATE", f"{cap_rate:.2f}%")
 # --- CONSULTORÍA CON GROQ (IA) ---
 st.divider()
 st.subheader("🤖 Belotti AI Consulting")
-pregunta = st.text_input("Pregunta al consultor (Ask in English or Spanish):", placeholder="Ej: Explain the tax treaty between Mexico and Canada")
+pregunta = st.text_input("Pregunta al consultor (Ask in English or Spanish):", placeholder="Ej: What is the ROI outlook for this zone?")
 
 if st.button("Analizar con IA"):
     if pregunta:
@@ -42,23 +42,23 @@ if st.button("Analizar con IA"):
                 "Content-Type": "application/json"
             }
             
-            # Estructura verificada: sin errores de llaves ni corchetes
+            # Estructura verificada sin errores de sintaxis
             payload = {
                 "model": "llama-3.3-70b-versatile",
                 "messages": [
                     {
                         "role": "system", 
-                        "content": "Eres un experto asesor inmobiliario en Cancún. Responde SIEMPRE en el mismo idioma en el que el usuario te haga la pregunta. Si preguntan en inglés, responde en inglés. Si preguntan en español, responde en español."
+                        "content": "You are a certified Real Estate expert in Cancun. MANDATORY: Respond ONLY in the same language the user uses. If the user asks in English, answer in English. If the user asks in Spanish, answer in Spanish."
                     },
                     {
                         "role": "user", 
-                        "content": f"Contexto: Propiedad de ${precio} USD, Cap Rate: {cap_rate:.2f}%. Pregunta: {pregunta}"
+                        "content": f"Context: Property ${precio} USD, Cap Rate {cap_rate:.2f}%. Question: {pregunta}"
                     }
                 ],
-                "temperature": 0.7
+                "temperature": 0.5
             }
             
-            with st.spinner("Analizando con Groq..."):
+            with st.spinner("Analizando..."):
                 try:
                     response = requests.post(url, headers=headers, json=payload, timeout=20)
                     if response.status_code == 200:
@@ -70,6 +70,6 @@ if st.button("Analizar con IA"):
                 except Exception as e:
                     st.error(f"Error de conexión: {e}")
         else:
-            st.error("⚠️ Falta 'GROQ_API_KEY' en los Secrets de Streamlit.")
+            st.error("⚠️ Configura 'GROQ_API_KEY' en los Secrets de Streamlit.")
     else:
         st.warning("Escribe una pregunta para el consultor.")
