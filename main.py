@@ -1,117 +1,82 @@
 import streamlit as st
-import requests
 import google.generativeai as genai
-import streamlit as st
 
-# Configurar la llave que guardaste en secrets
-genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+# --- CONFIGURACIÓN DE SEGURIDAD Y IA ---
+# Asegúrate de tener GEMINI_API_KEY en tus Secrets de Streamlit
+if "GEMINI_API_KEY" in st.secrets:
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+    model = genai.GenerativeModel('gemini-1.5-flash')
+else:
+    st.error("Falta la clave API de Gemini en los Secretos.")
 
-# Configurar el modelo y tu personalidad profesional
-model = genai.GenerativeModel('gemini-1.5-flash', 
-    system_instruction="""
-    Eres Antonio Belotti, asesor inmobiliario certificado por CONOCER en la Riviera Maya. 
-    Eres un experto trilingüe (Español, Italiano, Inglés) y especialista en análisis de datos.
-    Tu objetivo es ayudar a inversionistas a entender el ROI y la plusvalía en Cancún y Bacalar.
-    Utilizas los datos del 'catalogo_inversiones_cancun' para dar recomendaciones reales.
-    """)
-st.set_page_config(page_title="Belotti Analytics", page_icon="📊")
-
-# --- CALCULADORA ---
+# --- INTERFAZ DE LA CALCULADORA ---
 st.title("📊 Belotti Analytics")
 st.subheader("Real Estate Investment Audit - Cancún")
 
+# Inputs de la calculadora
 col1, col2 = st.columns(2)
 with col1:
-    precio = st.number_input("Precio Venta (USD)", value=1150000.0)
-    renta = st.number_input("Renta Mensual Bruta (USD)", value=19050.0)
+    precio_venta = st.number_input("Precio Venta (USD)", min_value=0.0, value=1150000.0)
+    renta_mensual = st.number_input("Renta Mensual Bruta (USD)", min_value=0.0, value=16192.50)
+
 with col2:
-    gastos = st.number_input("Gastos/Mantenimiento (USD)", value=1000.0)
-    ocupacion = st.slider("Ocupación Anual %", 0, 100, 85)
+    gastos = st.number_input("Gastos/Mantenimiento (USD)", min_value=0.0, value=1000.0)
+    ocupacion = st.slider("Ocupación Anual %", 0, 100, 100)
 
-# Cálculos de rentabilidad
-ingreso_anual = (renta * 12) * (ocupacion / 100)
-utilidad = ingreso_anual - (gastos * 12)
-cap_rate = (utilidad / precio) * 100 if precio > 0 else 0
+# --- CÁLCULOS MATEMÁTICOS ---
+ingreso_anual = (renta_mensual * 12) * (ocupacion / 100)
+utilidad_neta = ingreso_anual - (gastos * 12)
+cap_rate = (utilidad_neta / precio_venta) * 100 if precio_venta > 0 else 0
 
+# Mostrar resultados
 st.divider()
-m1, m2, m3 = st.columns(3)
-m1.metric("Ingreso Anual Est.", f"${ingreso_anual:,.0f}")
-m2.metric("Utilidad Neta", f"${utilidad:,.0f}")
-m3.metric("CAP RATE", f"{cap_rate:.2f}%")
+c1, c2, c3 = st.columns(3)
+c1.metric("Ingreso Anual Est.", f"${ingreso_anual:,.0f}")
+c2.metric("Utilidad Neta", f"${utilidad_neta:,.0f}")
+c3.metric("CAP RATE", f"{cap_rate:.2f}%")
 
-# --- CONSULTORÍA CON GROQ (IA) ---
+# --- SECCIÓN DE INTELIGENCIA ARTIFICIAL (BELOTTI AI) ---
 st.divider()
-st.subheader("🤖 Belotti AI Consulting")
-pregunta = st.text_input("Pregunta al consultor (Ask in English or Spanish):", placeholder="Ej: What is the ROI outlook for this zone?")
+st.header("🤖 Belotti AI Consulting")
+st.info("Pregunta al consultor (Ask in English, Spanish or Italian)")
 
-if st.button("Analizar con IA"):
-    if pregunta:
-        if "GROQ_API_KEY" in st.secrets:
-            api_key = st.secrets["GROQ_API_KEY"]
-            url = "https://api.groq.com/openai/v1/chat/completions"
-            
-            headers = {
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            }
-            
-            # Estructura verificada sin errores de sintaxis
-            payload = {
-                "model": "llama-3.3-70b-versatile",
-                "messages": [
-                    {
-                        "role": "system", 
-                        "content": "You are a certified Real Estate expert in Cancun. MANDATORY: Respond ONLY in the same language the user uses. If the user asks in English, answer in English. If the user asks in Spanish, answer in Spanish."
-                    },
-                    {
-                        "role": "user", 
-                        "content": f"Context: Property ${precio} USD, Cap Rate {cap_rate:.2f}%. Question: {pregunta}"
-                    }
-                ],
-                "temperature": 0.5
-            }
-            
-            with st.spinner("Analizando..."):
-                try:
-                    response = requests.post(url, headers=headers, json=payload, timeout=20)
-                    if response.status_code == 200:
-                        respuesta = response.json()['choices'][0]['message']['content']
-                        st.info(respuesta)
-                    else:
-                        error_msg = response.json().get('error', {}).get('message', 'Error desconocido')
-                        st.error(f"Error técnico: {error_msg}")
-                except Exception as e:
-                    st.error(f"Error de conexión: {e}")
-        else:
-            st.error("⚠️ Configura 'GROQ_API_KEY' en los Secrets de Streamlit.")
-    else:
-        st.warning("Escribe una pregunta para el consultor.")
-        st.divider()
-st.header("🤖 Asistente IA Belotti Inversiones")
-st.info("Pregúntame sobre los resultados de tu cálculo o sobre oportunidades de inversión en la Riviera Maya.")
-
-# Inicializar el historial de mensajes en la sesión
+# Inicializar historial de chat
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Mostrar mensajes anteriores del historial
+# Mostrar mensajes anteriores
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Capturar la pregunta del usuario
+# Lógica del Chat
 if prompt := st.chat_input("¿Qué duda tienes sobre esta inversión?"):
-    # Añadir mensaje del usuario al historial
+    # Guardar mensaje del usuario
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Generar respuesta con Gemini
+    # Crear el contexto para que la IA sepa qué números está analizando
+    # Aquí aplicamos tu perfil de Asesor Certificado por CONOCER
+    contexto_inversion = f"""
+    Eres Antonio Belotti, asesor inmobiliario certificado por CONOCER[cite: 1]. 
+    Respondes de forma profesional y trilingüe[cite: 1]. 
+    DATOS ACTUALES DE LA CALCULADORA:
+    - Precio de la propiedad: ${precio_venta:,.2f} USD
+    - Ingreso Anual Estimado: ${ingreso_anual:,.2f} USD
+    - Utilidad Neta: ${utilidad_neta:,.2f} USD
+    - CAP RATE calculado: {cap_rate:.2f}%
+    
+    Analiza estos datos basándote en el mercado de Cancún y la Riviera Maya. 
+    Si el cliente pregunta, usa esta información para dar una recomendación experta.
+    """
+
     with st.chat_message("assistant"):
-        with st.spinner("Analizando datos..."):
-            # Aquí la IA usa tu perfil trilingüe y certificado
-            response = model.generate_content(prompt)
+        with st.spinner("Consultando catálogo y analizando ROI..."):
+            # Enviamos el contexto + la personalidad + la pregunta
+            full_prompt = f"{contexto_inversion}\n\nPregunta del cliente: {prompt}"
+            response = model.generate_content(full_prompt)
             st.markdown(response.text)
-            
-    # Añadir respuesta de la IA al historial
+    
+    # Guardar respuesta de la IA
     st.session_state.messages.append({"role": "assistant", "content": response.text})
