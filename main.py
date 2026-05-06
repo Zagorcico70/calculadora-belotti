@@ -1,6 +1,19 @@
 import streamlit as st
 import requests
+import google.generativeai as genai
+import streamlit as st
 
+# Configurar la llave que guardaste en secrets
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+
+# Configurar el modelo y tu personalidad profesional
+model = genai.GenerativeModel('gemini-1.5-flash', 
+    system_instruction="""
+    Eres Antonio Belotti, asesor inmobiliario certificado por CONOCER en la Riviera Maya. 
+    Eres un experto trilingüe (Español, Italiano, Inglés) y especialista en análisis de datos.
+    Tu objetivo es ayudar a inversionistas a entender el ROI y la plusvalía en Cancún y Bacalar.
+    Utilizas los datos del 'catalogo_inversiones_cancun' para dar recomendaciones reales.
+    """)
 st.set_page_config(page_title="Belotti Analytics", page_icon="📊")
 
 # --- CALCULADORA ---
