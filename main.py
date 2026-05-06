@@ -1,82 +1,72 @@
 import streamlit as st
 import google.generativeai as genai
+import os
 
-# --- CONFIGURACIÓN DE SEGURIDAD Y IA ---
-# Asegúrate de tener GEMINI_API_KEY en tus Secrets de Streamlit
-if "GEMINI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    model = genai.GenerativeModel('gemini-1.5-flash')
-else:
-    st.error("Falta la clave API de Gemini en los Secretos.")
+# 1. Configuración de Identidad y Seguridad (Secrets)
+# Asegúrate de tener GEMINI_API_KEY en los Secrets de Streamlit
+api_key = st.secrets["GEMINI_API_KEY"]
+genai.configure(api_key=api_key)
 
-# --- INTERFAZ DE LA CALCULADORA ---
+# 2. Configuración de la Interfaz Profesional
+st.set_page_config(page_title="Belotti Analytics", page_icon="📊")
 st.title("📊 Belotti Analytics")
 st.subheader("Real Estate Investment Audit - Cancún")
 
-# Inputs de la calculadora
+# 3. Calculadora de Inversión (Tus datos actuales)
 col1, col2 = st.columns(2)
 with col1:
-    precio_venta = st.number_input("Precio Venta (USD)", min_value=0.0, value=1150000.0)
-    renta_mensual = st.number_input("Renta Mensual Bruta (USD)", min_value=0.0, value=16192.50)
-
+    precio = st.number_input("Precio Venta (USD)", value=1150000)
+    renta = st.number_input("Renta Mensual Bruta (USD)", value=16192)
 with col2:
-    gastos = st.number_input("Gastos/Mantenimiento (USD)", min_value=0.0, value=1000.0)
+    gastos = st.number_input("Gastos/Mantenimiento (USD)", value=1000)
     ocupacion = st.slider("Ocupación Anual %", 0, 100, 100)
 
-# --- CÁLCULOS MATEMÁTICOS ---
-ingreso_anual = (renta_mensual * 12) * (ocupacion / 100)
+# Cálculos de Belotti Inversiones
+ingreso_anual = (renta * 12) * (ocupacion / 100)
 utilidad_neta = ingreso_anual - (gastos * 12)
-cap_rate = (utilidad_neta / precio_venta) * 100 if precio_venta > 0 else 0
+cap_rate = (utilidad_neta / precio) * 100
 
-# Mostrar resultados
+# Resultados Visuales
 st.divider()
 c1, c2, c3 = st.columns(3)
 c1.metric("Ingreso Anual Est.", f"${ingreso_anual:,.0f}")
 c2.metric("Utilidad Neta", f"${utilidad_neta:,.0f}")
 c3.metric("CAP RATE", f"{cap_rate:.2f}%")
 
-# --- SECCIÓN DE INTELIGENCIA ARTIFICIAL (BELOTTI AI) ---
+# 4. Asistente IA con Identidad de Antonio Belotti
 st.divider()
-st.header("🤖 Belotti AI Consulting")
-st.info("Pregunta al consultor (Ask in English, Spanish or Italian)")
+st.subheader("🤖 Belotti AI Consulting")
 
-# Inicializar historial de chat
+# Contexto de Identidad (Tu Perfil Profesional)
+contexto_antonio = f"""
+Eres Antonio Belotti, un reconocido Real Estate Advisor trilingüe (Italiano, Español, Inglés).
+Tus credenciales son:
+- Asesor Inmobiliario Certificado por CONOCER (no AMPI).
+- Certificado en Data Analytics e IA por Google e IBM.
+- Más de 5 años de experiencia en el mercado de Cancún y Riviera Maya.
+- Fundador de Belotti Inversiones.
+
+Instrucciones:
+Responde siempre con profesionalismo. Si te preguntan por el negocio actual, 
+usa estos datos: CAP RATE de {cap_rate:.2f}%, Utilidad Neta de ${utilidad_neta:,.0f}.
+Explica por qué un CAP RATE arriba del 15% es excepcional en Cancún.
+"""
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Mostrar mensajes anteriores
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Lógica del Chat
-if prompt := st.chat_input("¿Qué duda tienes sobre esta inversión?"):
-    # Guardar mensaje del usuario
+if prompt := st.chat_input("Pregunta al consultor (Ask in English or Spanish):"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Crear el contexto para que la IA sepa qué números está analizando
-    # Aquí aplicamos tu perfil de Asesor Certificado por CONOCER
-    contexto_inversion = f"""
-    Eres Antonio Belotti, asesor inmobiliario certificado por CONOCER[cite: 1]. 
-    Respondes de forma profesional y trilingüe[cite: 1]. 
-    DATOS ACTUALES DE LA CALCULADORA:
-    - Precio de la propiedad: ${precio_venta:,.2f} USD
-    - Ingreso Anual Estimado: ${ingreso_anual:,.2f} USD
-    - Utilidad Neta: ${utilidad_neta:,.2f} USD
-    - CAP RATE calculado: {cap_rate:.2f}%
-    
-    Analiza estos datos basándote en el mercado de Cancún y la Riviera Maya. 
-    Si el cliente pregunta, usa esta información para dar una recomendación experta.
-    """
-
     with st.chat_message("assistant"):
-        with st.spinner("Consultando catálogo y analizando ROI..."):
-            # Enviamos el contexto + la personalidad + la pregunta
-            full_prompt = f"{contexto_inversion}\n\nPregunta del cliente: {prompt}"
-            response = model.generate_content(full_prompt)
-            st.markdown(response.text)
-    
-    # Guardar respuesta de la IA
-    st.session_state.messages.append({"role": "assistant", "content": response.text})
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        # Combinamos el contexto con la pregunta
+        response = model.generate_content(f"{contexto_antonio}\n\nUsuario dice: {prompt}")
+        st.markdown(response.text)
+        st.session_state.messages.append({"role": "assistant", "content": response.text})
