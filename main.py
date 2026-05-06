@@ -86,3 +86,32 @@ if st.button("Analizar con IA"):
             st.error("⚠️ Configura 'GROQ_API_KEY' en los Secrets de Streamlit.")
     else:
         st.warning("Escribe una pregunta para el consultor.")
+        st.divider()
+st.header("🤖 Asistente IA Belotti Inversiones")
+st.info("Pregúntame sobre los resultados de tu cálculo o sobre oportunidades de inversión en la Riviera Maya.")
+
+# Inicializar el historial de mensajes en la sesión
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Mostrar mensajes anteriores del historial
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# Capturar la pregunta del usuario
+if prompt := st.chat_input("¿Qué duda tienes sobre esta inversión?"):
+    # Añadir mensaje del usuario al historial
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # Generar respuesta con Gemini
+    with st.chat_message("assistant"):
+        with st.spinner("Analizando datos..."):
+            # Aquí la IA usa tu perfil trilingüe y certificado
+            response = model.generate_content(prompt)
+            st.markdown(response.text)
+            
+    # Añadir respuesta de la IA al historial
+    st.session_state.messages.append({"role": "assistant", "content": response.text})
