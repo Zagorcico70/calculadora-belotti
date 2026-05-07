@@ -3,10 +3,6 @@ import requests
 
 st.set_page_config(page_title="Belotti Analytics", page_icon="📊")
 
-# --- CONFIGURACIÓN DE TU PROYECTO ---
-PROJECT_ID = "southern-ivy-495614-p2" 
-LOCATION = "us-central1" 
-
 st.title("📊 Belotti Analytics")
 st.subheader("Real Estate Strategy - Cancún")
 
@@ -19,35 +15,42 @@ st.metric("ROI / CAP RATE", f"{cap_rate:.2f}%")
 st.divider()
 pregunta = st.text_input("Haz tu pregunta al asistente:")
 
-if st.button("Ejecutar Análisis Profesional"):
+if st.button("Ejecutar Análisis"):
     api_key = st.secrets.get("GEMINI_API_KEY")
     
     if not api_key:
         st.error("⚠️ Configura la clave en Secrets.")
     else:
-        # RUTA EMPRESARIAL (VERTEX AI) - Esta es la que NO da error 404
-        url = f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/{LOCATION}/publishers/google/models/gemini-1.5-flash:generateContent?key={api_key}"
+        # Esta es la URL que acepta API KEY y usa tu facturación de Google Cloud
+        # Usamos la v1 (versión estable de producción)
+        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
         
         payload = {
             "contents": [{
-                "role": "user",
-                "parts": [{"text": f"Eres Antonio Belotti, experto inmobiliario en Cancún. El ROI es {cap_rate:.2f}%. Pregunta: {pregunta}"}]
+                "parts": [{
+                    "text": f"Eres experto inmobiliario en Cancún. El ROI es {cap_rate:.2f}%. Pregunta: {pregunta}"
+                }]
             }]
         }
         
-        with st.spinner("Conectando con Vertex AI (Acceso Prioritario)..."):
+        with st.spinner("Analizando con prioridad alta..."):
             try:
                 response = requests.post(url, json=payload, timeout=20)
                 
                 if response.status_code == 200:
                     res_json = response.json()
-                    # Extraemos el texto de la respuesta profesional
-                    texto = res_json['candidates'][0]['content']['parts'][0]['text']
-                    st.success("**Análisis de Belotti AI:**")
-                    st.write(texto)
-                elif response.status_code == 403:
-                    st.error("Error 403: Debes habilitar la 'Vertex AI API' en tu consola de Google Cloud para este proyecto.")
+                    st.success("**Análisis Estratégico:**")
+                    st.write(res_json['candidates'][0]['content']['parts'][0]['text'])
+                elif response.status_code == 404:
+                    # Si la v1 falla, intentamos v1beta (a veces los proyectos nuevos están aquí)
+                    url_beta = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+                    res_beta = requests.post(url_beta, json=payload, timeout=20)
+                    if res_beta.status_code == 200:
+                        st.success(res_beta.json()['candidates'][0]['content']['parts'][0]['text'])
+                    else:
+                        st.error(f"Error {res_beta.status_code}: Revisa si la API de Gemini está habilitada en Google Cloud.")
                 else:
                     st.error(f"Error {response.status_code}: {response.text}")
+                    
             except Exception as e:
                 st.error(f"Error de conexión: {e}")
