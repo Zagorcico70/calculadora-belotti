@@ -38,7 +38,7 @@ if st.button("Analizar con IA"):
             try:
                 # Configuración de Gemini
                 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-                model = genai.GenerativeModel('gemini-1.5-flash')
+                model = genai.GenerativeModel('models/gemini-1.5-flash')
                 
                 # Contexto para el modelo
                 prompt_sistema = (
