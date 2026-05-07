@@ -1,5 +1,5 @@
 import streamlit as st
-import requests
+import google.generativeai as genai
 
 st.set_page_config(page_title="Belotti Analytics", page_icon="📊")
 
@@ -26,50 +26,35 @@ m1.metric("Ingreso Anual Est.", f"${ingreso_anual:,.0f}")
 m2.metric("Utilidad Neta", f"${utilidad:,.0f}")
 m3.metric("CAP RATE", f"{cap_rate:.2f}%")
 
-# --- CONSULTORÍA CON GROQ (IA) ---
+# --- CONSULTORÍA CON GEMINI (IA) ---
 st.divider()
 st.subheader("🤖 Belotti AI Consulting")
 pregunta = st.text_input("Pregunta al consultor (Ask in English or Spanish):", placeholder="Ej: What is the ROI outlook for this zone?")
 
 if st.button("Analizar con IA"):
     if pregunta:
-        if "GROQ_API_KEY" in st.secrets:
-            api_key = st.secrets["GROQ_API_KEY"]
-            url = "https://api.groq.com/openai/v1/chat/completions"
-            
-            headers = {
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            }
-            
-            # Estructura verificada sin errores de sintaxis
-            payload = {
-                "model": "llama-3.3-70b-versatile",
-                "messages": [
-                    {
-                        "role": "system", 
-                        "content": "You are a certified Real Estate expert in Cancun. MANDATORY: Respond ONLY in the same language the user uses. If the user asks in English, answer in English. If the user asks in Spanish, answer in Spanish."
-                    },
-                    {
-                        "role": "user", 
-                        "content": f"Context: Property ${precio} USD, Cap Rate {cap_rate:.2f}%. Question: {pregunta}"
-                    }
-                ],
-                "temperature": 0.5
-            }
-            
-            with st.spinner("Analizando..."):
-                try:
-                    response = requests.post(url, headers=headers, json=payload, timeout=20)
-                    if response.status_code == 200:
-                        respuesta = response.json()['choices'][0]['message']['content']
-                        st.info(respuesta)
-                    else:
-                        error_msg = response.json().get('error', {}).get('message', 'Error desconocido')
-                        st.error(f"Error técnico: {error_msg}")
-                except Exception as e:
-                    st.error(f"Error de conexión: {e}")
+        # Buscamos la clave de Google en los Secrets
+        if "GOOGLE_API_KEY" in st.secrets:
+            try:
+                # Configuración de Gemini
+                genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+                model = genai.GenerativeModel('gemini-1.5-flash')
+                
+                # Contexto para el modelo
+                prompt_sistema = (
+                    "You are a certified Real Estate expert in Cancun. "
+                    "MANDATORY: Respond ONLY in the same language the user uses. "
+                    f"Context: Property Price ${precio} USD, Cap Rate {cap_rate:.2f}%. "
+                    f"Question: {pregunta}"
+                )
+
+                with st.spinner("Analizando con Gemini..."):
+                    response = model.generate_content(prompt_sistema)
+                    st.info(response.text)
+                    
+            except Exception as e:
+                st.error(f"Error técnico con Gemini: {e}")
         else:
-            st.error("⚠️ Configura 'GROQ_API_KEY' en los Secrets de Streamlit.")
+            st.error("⚠️ Configura 'GOOGLE_API_KEY' en los Secrets de Streamlit.")
     else:
-        st.warning("Escribe una pregunta para el consultor.")
+        st.warning("Por favor, escribe una pregunta primero.")
