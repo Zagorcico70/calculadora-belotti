@@ -14,35 +14,51 @@ st.metric("ROI / CAP RATE", f"{cap_rate:.2f}%")
 
 st.divider()
 
-if st.button("ANALIZAR INVERSIÓN"):
+if st.button("BUSCAR MODELO Y ANALIZAR"):
     api_key = st.secrets.get("GEMINI_API_KEY")
     
     if not api_key:
-        st.error("⚠️ Falta la clave en Secrets.")
+        st.error("⚠️ No hay clave en Secrets.")
     else:
-        # CAMBIO CLAVE: Usamos 'v1' y el nombre completo del modelo
-        # Esta es la ruta exacta para cuentas con Google Cloud Billing
-        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
+        # PASO 1: Listar modelos disponibles para TU llave
+        url_lista = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
         
-        payload = {
-            "contents": [{
-                "parts": [{
-                    "text": f"Eres experto inmobiliario en Cancún. El ROI es {cap_rate:.2f}%. Dame un consejo breve."
-                }]
-            }]
-        }
-        
-        with st.spinner("Conectando con el modelo de producción..."):
-            try:
-                response = requests.post(url, json=payload, timeout=15)
-                
-                if response.status_code == 200:
-                    st.balloons()
-                    st.success("**¡CONEXIÓN EXITOSA!**")
-                    st.write(response.json()['candidates'][0]['content']['parts'][0]['text'])
+        try:
+            with st.spinner("Consultando modelos autorizados para Belotti Analytics..."):
+                res_lista = requests.get(url_lista)
+                if res_lista.status_code == 200:
+                    modelos_data = res_lista.json()
+                    
+                    # Buscamos el mejor modelo disponible que soporte generación de contenido
+                    # Priorizamos 'gemini-1.5-flash' o 'gemini-pro'
+                    modelos_validos = [m['name'] for m in modelos_data['models'] if "generateContent" in m['supportedGenerationMethods']]
+                    
+                    if not modelos_validos:
+                        st.error("No se encontraron modelos de generación de contenido activos.")
+                    else:
+                        # Seleccionamos el mejor modelo disponible
+                        modelo_a_usar = modelos_validos[0]
+                        st.info(f"Conectando a: {modelo_a_usar}")
+                        
+                        # PASO 2: Hacer la consulta real
+                        url_ai = f"https://generativelanguage.googleapis.com/v1beta/{modelo_a_usar}:generateContent?key={api_key}"
+                        payload = {
+                            "contents": [{
+                                "parts": [{
+                                    "text": f"Eres experto en Cancún. El ROI es {cap_rate:.2f}%. Dame un consejo breve sobre esta inversión."
+                                }]
+                            }]
+                        }
+                        
+                        res_ai = requests.post(url_ai, json=payload)
+                        if res_ai.status_code == 200:
+                            st.balloons()
+                            st.success("**¡ANÁLISIS EXITOSO!**")
+                            st.write(res_ai.json()['candidates'][0]['content']['parts'][0]['text'])
+                        else:
+                            st.error(f"Error al generar: {res_ai.text}")
                 else:
-                    # Si falla, te diré qué otros modelos tienes disponibles
-                    st.error(f"Error {response.status_code}")
-                    st.write("Respuesta de Google:", response.json())
-            except Exception as e:
-                st.error(f"Error de conexión: {e}")
+                    st.error("Google no reconoce tu API Key.")
+                    st.write(res_lista.text)
+        except Exception as e:
+            st.error(f"Error de conexión: {e}")
